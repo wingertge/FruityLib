@@ -1,0 +1,16 @@
+[
+{
+  "modid": "fruitylib",
+  "name": "FruityLib",
+  "description": "Core Library for GenerousGuava's mods",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["GenerousGuava"],
+  "credits": "Me, me and only me. Also other people.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
