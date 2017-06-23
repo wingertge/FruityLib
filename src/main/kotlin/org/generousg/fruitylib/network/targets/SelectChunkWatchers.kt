@@ -13,10 +13,10 @@ class SelectChunkWatchers : IPacketTargetSelector<DimCoord> {
     companion object { val instance = lazy { InstanceHolder.INSTANCE } }
 
     override fun isAllowedOnSide(side: Side): Boolean = side == Side.SERVER
-    override fun listDispatchers(arg: DimCoord, result: MutableCollection<NetworkDispatcher?>) {
+    override fun listDispatchers(arg: DimCoord, result: MutableCollection<NetworkDispatcher>) {
         val server = DimensionManager.getWorld(arg.dimension)
         val players = NetUtils.getPlayersWatchingBlock(server, arg.x, arg.z)
-        players.mapTo(result) { NetUtils.getPlayerDispatcher(it) }
+        players.mapTo(result) { NetUtils.getPlayerDispatcher(it)!! }
     }
 
     override fun castArg(arg: Any): DimCoord = arg as DimCoord

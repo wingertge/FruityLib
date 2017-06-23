@@ -5,10 +5,10 @@ import com.google.common.collect.Maps
 import org.generousg.fruitylib.reflect.ConstructorAccess
 import org.generousg.fruitylib.reflect.TypeUtils
 import org.generousg.fruitylib.serializable.providers.*
+import org.generousg.fruitylib.util.TypeRW
 import org.generousg.fruitylib.util.io.IStreamReader
 import org.generousg.fruitylib.util.io.IStreamSerializer
 import org.generousg.fruitylib.util.io.IStreamWriter
-import util.TypeRW
 import java.io.DataInput
 import java.io.DataOutput
 import java.io.IOException

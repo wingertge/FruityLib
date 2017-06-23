@@ -31,6 +31,7 @@ repositories {
     maven { // JEI, McJtyLib and TOP
         url "http://modmaven.k-4u.nl/"
     }
+    maven { url = "http://mobiusstrip.eu/maven" }
 }
 
 // Define properties file
@@ -74,6 +75,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:1.1.2"
     compile "org.jetbrains.kotlin:kotlin-reflect:1.1.2"
     compile "org.apache.logging.log4j:log4j-core:2.8.2"
+    compile "mcp.mobius.waila:Waila:${config.waila_version}:dev"
     compile fileTree(dir: 'lib', include: '*.jar')
 }
 
@@ -105,4 +107,5 @@ idea {
 sourceSets {
     main.kotlin.srcDirs += 'src/main/kotlin'
     main.java.srcDirs += 'src/main/java'
+    main.resources.srcDirs += 'src/main/resources'
 }

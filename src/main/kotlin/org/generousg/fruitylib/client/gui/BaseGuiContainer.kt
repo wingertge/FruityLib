@@ -7,6 +7,9 @@ import org.generousg.fruitylib.container.ContainerBase
 
 @Suppress("UNCHECKED_CAST")
 open class BaseGuiContainer<out T : ContainerBase<*>>(container: T, width: Int, height: Int, val name: String) : ComponentGui(container, width, height) {
+    val xPos get() = (width - xSize) / 2
+    val yPos get() = (height - ySize) / 2
+
     override fun createRoot(): BaseComposite = GuiComponentPanel(0, 0, xSize, ySize, getContainer())
 
     fun getContainer(): T = inventorySlots as T

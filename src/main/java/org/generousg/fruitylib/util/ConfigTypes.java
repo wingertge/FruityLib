@@ -1,4 +1,4 @@
-package util;
+package org.generousg.fruitylib.util;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraftforge.common.config.Property;

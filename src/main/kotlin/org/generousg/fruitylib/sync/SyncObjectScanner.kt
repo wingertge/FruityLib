@@ -31,7 +31,7 @@ class SyncObjectScanner : FieldsSelector() {
                 Preconditions.checkNotNull(obj, "Null field value")
             } catch (e: Exception) {
                 obj = DummySyncableObject.instance.value
-                Log.severe(e, "Exception while registering synced field '%s' of object '%s'", field, target)
+                Log.severe(e, "Exception while registering synced field '$field' of object '$target'")
             }
 
             val fieldName = field.name

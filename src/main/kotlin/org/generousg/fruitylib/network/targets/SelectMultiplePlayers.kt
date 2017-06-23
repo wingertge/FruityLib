@@ -16,7 +16,7 @@ class SelectMultiplePlayers : IPacketTargetSelector<Collection<EntityPlayerMP>> 
     override fun castArg(arg: Any): Collection<EntityPlayerMP> = arg as Collection<EntityPlayerMP>
     override fun isAllowedOnSide(side: Side): Boolean = side == Side.SERVER
 
-    override fun listDispatchers(arg: Collection<EntityPlayerMP>, result: MutableCollection<NetworkDispatcher?>) {
+    override fun listDispatchers(arg: Collection<EntityPlayerMP>, result: MutableCollection<NetworkDispatcher>) {
         for(player in arg) {
             val dispatcher = NetUtils.getPlayerDispatcher(player)
             if(dispatcher != null) result.add(dispatcher)

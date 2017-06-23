@@ -3,11 +3,11 @@ package org.generousg.fruitylib.serializable.providers
 import com.google.common.io.ByteStreams
 import com.google.common.reflect.TypeToken
 import org.generousg.fruitylib.serializable.SerializerRegistry
+import org.generousg.fruitylib.util.ByteUtils
 import org.generousg.fruitylib.util.StreamUtils
 import org.generousg.fruitylib.util.io.IStreamSerializer
 import org.generousg.fruitylib.util.io.InputBitStream
 import org.generousg.fruitylib.util.io.OutputBitStream
-import util.ByteUtils
 import java.io.DataInput
 import java.io.DataOutput
 

@@ -7,11 +7,11 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.config.Configuration
 import net.minecraftforge.common.config.Property
 import org.apache.commons.lang3.StringUtils
+import org.generousg.fruitylib.util.ConfigTypes
 import org.generousg.fruitylib.util.Log
+import org.generousg.fruitylib.util.StringConversionException
+import org.generousg.fruitylib.util.TypeRW
 import org.generousg.fruitylib.util.io.IStringSerializer
-import util.ConfigTypes
-import util.StringConversionException
-import util.TypeRW
 import java.lang.reflect.Field
 import java.util.*
 

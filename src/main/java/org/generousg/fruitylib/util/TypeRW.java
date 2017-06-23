@@ -1,4 +1,4 @@
-package util;
+package org.generousg.fruitylib.util;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;

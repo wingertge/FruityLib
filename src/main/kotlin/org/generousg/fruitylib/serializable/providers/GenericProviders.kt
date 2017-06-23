@@ -7,9 +7,9 @@ import com.google.common.reflect.TypeToken
 import org.generousg.fruitylib.reflect.TypeUtils
 import org.generousg.fruitylib.serializable.IGenericSerializerProvider
 import org.generousg.fruitylib.serializable.SerializerRegistry
+import org.generousg.fruitylib.util.ByteUtils
 import org.generousg.fruitylib.util.io.IStreamSerializer
 import org.generousg.fruitylib.util.io.OutputBitStream
-import util.ByteUtils
 import java.io.DataInput
 import java.io.DataOutput
 import java.lang.reflect.Type

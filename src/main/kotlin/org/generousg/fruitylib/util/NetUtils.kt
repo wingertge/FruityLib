@@ -22,7 +22,7 @@ class NetUtils {
 
         fun getPlayersWatchingBlock(world: WorldServer, blockX: Int, blockZ: Int) = getPlayersWatchingChunk(world, blockX shr 4, blockZ shr 4)
         fun getPlayersWatchingChunk(world: WorldServer, chunkX: Int, chunkZ: Int): List<EntityPlayerMP> {
-            return ImmutableList.copyOf(world.playerChunkMap.getEntry(chunkX, chunkZ)?.players)
+            return ImmutableList.copyOf(world.playerChunkMap.getEntry(chunkX, chunkZ)?.players ?: arrayListOf())
         }
 
         fun getPlayerDispatcher(player: EntityPlayerMP): NetworkDispatcher? = player.connection.netManager.channel().attr(NetworkDispatcher.FML_DISPATCHER).get()

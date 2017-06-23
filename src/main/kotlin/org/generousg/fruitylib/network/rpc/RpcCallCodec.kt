@@ -11,7 +11,7 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.network.PacketBuffer
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket
 import org.generousg.fruitylib.FruityLib
-import util.ByteUtils
+import org.generousg.fruitylib.util.ByteUtils
 import java.lang.reflect.Method
 
 @ChannelHandler.Sharable

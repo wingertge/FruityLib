@@ -17,8 +17,8 @@ class ExtendedOutboundHandler : ChannelOutboundHandlerAdapter() {
         val MESSAGETARGET = AttributeKey.valueOf<IPacketTargetSelector<*>>("fl:outboundTarget")
 
         private fun <T> getDispatchers(target: IPacketTargetSelector<T>, arg: Any): Collection<NetworkDispatcher> {
-            val output = arrayListOf<NetworkDispatcher>()
-            target.listDispatchers(target.castArg(arg), output.toMutableList())
+            val output = mutableListOf<NetworkDispatcher>()
+            target.listDispatchers(target.castArg(arg), output)
             return output
         }
 

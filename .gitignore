@@ -17,12 +17,10 @@ out
 eclipse
 run
 lib
-*.txt
 
 # gradle
 .gradle
 build
-classes
 gradle
 gradlew
 gradlew.bat

@@ -85,7 +85,7 @@ abstract class FruityBlock(material: Material, var hasInfo: Boolean = false) : B
     override fun createBlockState(): BlockStateContainer = BlockStateContainer(this, FACING)
 
     override fun addInformation(stack: ItemStack, player: EntityPlayer, tooltip: MutableList<String>, advanced: Boolean) {
-        if(hasInfo) tooltip.add(I18n.format(unlocalizedName + ".info"))
+        if(hasInfo) tooltip.add(1, I18n.format(unlocalizedName + ".info"))
     }
 
     override fun hasTileEntity(): Boolean = this is ITileEntityProvider

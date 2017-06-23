@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.LoaderState
 import org.generousg.fruitylib.datastore.DataStoreBuilder
 import org.generousg.fruitylib.datastore.IDataVisitor
 import org.generousg.fruitylib.network.IdSyncManager
-import util.TypeRW
+import org.generousg.fruitylib.util.TypeRW
 
 
 class NetworkEventManager private constructor() {

@@ -98,7 +98,7 @@ open class GenericInventory(protected val inventoryName: String, protected val i
         return !inventoryContents[slot].isNullOrEmpty() && inventoryContents[slot].item === item
     }
 
-    override fun isItemValidForSlot(i: Int, itemstack: ItemStack): Boolean {
+    override fun isItemValidForSlot(i: Int, stack: ItemStack): Boolean {
         return true
     }
 
@@ -134,7 +134,7 @@ open class GenericInventory(protected val inventoryName: String, protected val i
     override fun setInventorySlotContents(i: Int, itemstack: ItemStack) {
         this.inventoryContents[i] = itemstack
 
-        if (itemstack.isNullOrEmpty() && itemstack.stackSize > inventoryStackLimit) {
+        if (!itemstack.isNullOrEmpty() && itemstack.stackSize > inventoryStackLimit) {
             itemstack.stackSize = inventoryStackLimit
         }
 

@@ -4,8 +4,8 @@ import com.google.common.base.Preconditions
 import net.minecraftforge.fml.common.Loader
 import net.minecraftforge.fml.common.LoaderState
 import org.generousg.fruitylib.network.IdSyncManager
+import org.generousg.fruitylib.util.TypeRW
 import org.objectweb.asm.Type
-import util.TypeRW
 
 
 class RpcSetup internal constructor() {

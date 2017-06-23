@@ -1,7 +1,5 @@
 package org.generousg.fruitylib.network.event
 
-import network.event.EventDirection
-
 
 @Target(AnnotationTarget.TYPE)
 @Retention(AnnotationRetention.RUNTIME)

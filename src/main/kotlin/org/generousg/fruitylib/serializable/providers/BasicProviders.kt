@@ -6,8 +6,8 @@ import org.generousg.fruitylib.serializable.SerializerAdapters
 import org.generousg.fruitylib.serializable.SerializerRegistry
 import org.generousg.fruitylib.serializable.cls.ClassSerializersProvider
 import org.generousg.fruitylib.serializable.cls.SerializableClass
+import org.generousg.fruitylib.util.ByteUtils
 import org.generousg.fruitylib.util.io.IStreamSerializer
-import util.ByteUtils
 import java.io.DataInput
 import java.io.DataOutput
 import java.lang.reflect.Array

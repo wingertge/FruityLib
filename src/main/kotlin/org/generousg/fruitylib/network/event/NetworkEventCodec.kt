@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket
 import net.minecraftforge.fml.relauncher.Side
 import org.generousg.fruitylib.FruityLib
-import util.io.PacketChunker
+import org.generousg.fruitylib.util.io.PacketChunker
 import java.io.*
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream

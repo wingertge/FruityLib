@@ -1,16 +1,14 @@
-package network.rpc.targets;
+package org.generousg.fruitylib.network.rpc.targets;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import org.generousg.fruitylib.network.rpc.IRpcTarget;
 import org.generousg.fruitylib.network.rpc.IRpcTargetProvider;
-import org.generousg.fruitylib.network.rpc.targets.EntityRpcTarget;
-import org.generousg.fruitylib.network.rpc.targets.TileEntityRpcTarget;
 import org.generousg.fruitylib.sync.ISyncMapProvider;
 import org.generousg.fruitylib.sync.ISyncableObject;
 import org.generousg.fruitylib.sync.SyncMap;
-import util.ByteUtils;
+import org.generousg.fruitylib.util.ByteUtils;
 
 import java.io.DataInput;
 import java.io.DataOutput;

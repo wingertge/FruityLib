@@ -1,8 +1,8 @@
 package org.generousg.fruitylib.datastore
 
+import org.generousg.fruitylib.util.ByteUtils
 import org.generousg.fruitylib.util.io.IStreamReader
 import org.generousg.fruitylib.util.io.IStreamWriter
-import util.ByteUtils
 import java.io.DataInput
 import java.io.DataOutput
 import java.io.IOException

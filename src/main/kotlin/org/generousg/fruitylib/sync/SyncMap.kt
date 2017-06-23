@@ -12,9 +12,9 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.minecraftforge.fml.common.network.ByteBufUtils
+import org.generousg.fruitylib.util.ByteUtils
 import org.generousg.fruitylib.util.Log
 import org.generousg.fruitylib.util.events.Event
-import util.ByteUtils
 import java.io.*
 import java.util.*
 import kotlin.experimental.and
@@ -76,7 +76,7 @@ abstract class SyncMap<out H : ISyncMapProvider>(protected val handler: H) {
                     val z = input.readInt()
                     val blockPos = BlockPos(x, y ,z)
 
-                    if(world.isAirBlock(blockPos)) {
+                    if(!world.isAirBlock(blockPos)) {
                         val tile = world.getTileEntity(blockPos)
                         if(tile is ISyncMapProvider) return tile
                     }

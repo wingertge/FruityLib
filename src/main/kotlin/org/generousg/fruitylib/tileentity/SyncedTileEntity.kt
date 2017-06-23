@@ -2,8 +2,8 @@ package org.generousg.fruitylib.tileentity
 
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket
-import network.rpc.targets.SyncRpcTarget
 import org.generousg.fruitylib.network.rpc.RpcCallDispatcher
+import org.generousg.fruitylib.network.rpc.targets.SyncRpcTarget
 import org.generousg.fruitylib.reflect.TypeUtils
 import org.generousg.fruitylib.sync.*
 import org.generousg.fruitylib.sync.drops.DropTagSerializer

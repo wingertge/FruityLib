@@ -1,9 +1,9 @@
 package org.generousg.fruitylib.datastore
 
+import org.generousg.fruitylib.util.TypeRW
 import org.generousg.fruitylib.util.io.IStreamReader
 import org.generousg.fruitylib.util.io.IStreamSerializer
 import org.generousg.fruitylib.util.io.IStreamWriter
-import util.TypeRW
 
 
 class DataStoreBuilder<K, V>(private val owner: DataStoreManager, private val key: DataStoreKey<K, V>, private val keyClass: Class<out K>, private val valueClass: Class<out V>) {

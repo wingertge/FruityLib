@@ -1,4 +1,4 @@
-package util;
+package org.generousg.fruitylib.util;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;

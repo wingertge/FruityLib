@@ -1,4 +1,4 @@
-package network.event;
+package org.generousg.fruitylib.network.event;
 
 import net.minecraftforge.fml.relauncher.Side;
 

@@ -1,5 +1,6 @@
 package org.generousg.fruitylib.reflect
 
+import com.google.common.base.Strings
 import com.google.common.base.Throwables
 import java.lang.reflect.Field
 import java.util.*
@@ -27,6 +28,18 @@ class ReflectionHelper {
             }
 
             throw FieldNotFoundException(cls, *fields)
+        }
+
+        fun getClass(className: String): Class<*>? {
+            if (Strings.isNullOrEmpty(className)) return null
+            try {
+                val cls = Class.forName(className)
+                ReflectionLog.logLoad(cls)
+                return cls
+            } catch (e: Exception) {
+                throw Throwables.propagate(e)
+            }
+
         }
     }
 }

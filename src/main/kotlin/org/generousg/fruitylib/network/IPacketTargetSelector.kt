@@ -7,5 +7,5 @@ import net.minecraftforge.fml.relauncher.Side
 interface IPacketTargetSelector<T> {
     fun isAllowedOnSide(side: Side): Boolean
     fun castArg(arg: Any): T
-    fun listDispatchers(arg: T, result: MutableCollection<NetworkDispatcher?>)
+    fun listDispatchers(arg: T, result: MutableCollection<NetworkDispatcher>)
 }
