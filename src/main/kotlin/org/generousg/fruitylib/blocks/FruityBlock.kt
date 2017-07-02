@@ -44,7 +44,8 @@ abstract class FruityBlock(material: Material, var hasInfo: Boolean = false) : B
 
     internal var teClass: Class<out TileEntity>? = null
     val activateEvent = Event<BlockActivatedEvent>()
-    val breakEvent = Event<BlockBrokenEvent>()
+    val breakEvent = Event<BlockBreakEvent>()
+    val destroyEvent = Event<BlockBrokenEvent>()
     val placeEvent = Event<BlockPlacedEvent>()
     val addEvent = Event<BlockAddedEvent>()
     val neighborChangedEvent = Event<NeighborChangedEvent>()
@@ -71,12 +72,12 @@ abstract class FruityBlock(material: Material, var hasInfo: Boolean = false) : B
     }
 
     override fun onBlockDestroyedByPlayer(worldIn: World, pos: BlockPos, state: IBlockState) {
-        breakEvent.fire(BlockBrokenEvent(worldIn, pos))
+        destroyEvent.fire(BlockBrokenEvent(worldIn, pos))
         super.onBlockDestroyedByPlayer(worldIn, pos, state)
     }
 
     override fun onBlockDestroyedByExplosion(worldIn: World, pos: BlockPos, explosionIn: Explosion) {
-        breakEvent.fire(BlockBrokenEvent(worldIn, pos))
+        destroyEvent.fire(BlockBrokenEvent(worldIn, pos))
         super.onBlockDestroyedByExplosion(worldIn, pos, explosionIn)
     }
 
@@ -128,7 +129,7 @@ abstract class FruityBlock(material: Material, var hasInfo: Boolean = false) : B
 
     override fun onNeighborChange(world: IBlockAccess, pos: BlockPos, neighbor: BlockPos) {
         val blockState = world.getBlockState(neighbor)
-        neighborChangedEvent.fire(NeighborChangedEvent(world, pos, blockState))
+        neighborChangedEvent.fire(NeighborChangedEvent(world, pos, neighbor, blockState))
         super.onNeighborChange(world, pos, neighbor)
     }
 
@@ -140,6 +141,14 @@ abstract class FruityBlock(material: Material, var hasInfo: Boolean = false) : B
         return super.getDrops(world, pos, state, fortune)
     }
 
-
     fun openGui(player: EntityPlayer, world: World, x: Int, y: Int, z: Int) = player.openGui(mod, FRUITY_LIB_TE_GUI, world, x, y, z)
+
+    override fun damageDropped(state: IBlockState): Int {
+        return getMetaFromState(state)
+    }
+
+    override fun breakBlock(worldIn: World, pos: BlockPos, state: IBlockState) {
+        breakEvent.fire(BlockBreakEvent(worldIn, pos, state))
+        super.breakBlock(worldIn, pos, state)
+    }
 }

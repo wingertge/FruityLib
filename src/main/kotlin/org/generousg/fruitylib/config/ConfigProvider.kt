@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions
 import com.google.common.base.Throwables
 import com.google.common.collect.ImmutableSet
 import net.minecraft.block.Block
-import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.Item
@@ -17,7 +16,6 @@ import net.minecraftforge.fml.common.Loader
 import net.minecraftforge.fml.common.registry.GameRegistry
 import net.minecraftforge.fml.relauncher.Side
 import org.generousg.fruitylib.blocks.FruityBlock
-import org.generousg.fruitylib.flowcontrol.EventQueue
 import org.generousg.fruitylib.items.FruityItem
 import org.generousg.fruitylib.util.Log
 import java.lang.reflect.Modifier
@@ -96,9 +94,8 @@ class ConfigProvider() {
                     block.creativeTab = creativeTabs[annotation.creativeTab]
                 setItemPrefixedId(annotation.unlocalizedName, name, langDecorator, { block.unlocalizedName = it})
                 if(block is FruityItem) block.hasInfo = annotation.hasInfo
-
                 if(FMLCommonHandler.instance().effectiveSide == Side.CLIENT && !annotation.specialModel)
-                    EventQueue.queueActionForPostInit{Minecraft.getMinecraft().renderItem.itemModelMesher.register(block, 0, ModelResourceLocation(block.registryName, "inventory"))}
+                    ModelLoader.setCustomModelResourceLocation(block, 0, ModelResourceLocation(block.registryName, "inventory"))
             }
 
             override fun getEntryName(annotation: RegisterItem): String = annotation.name
@@ -135,19 +132,13 @@ class ConfigProvider() {
                 if(block is FruityBlock) block.hasInfo = annotation.hasInfo
 
 
-
                 if(FMLCommonHandler.instance().effectiveSide == Side.CLIENT && !annotation.specialModel && block is FruityBlock)
-                    EventQueue.queueActionForPostInit { setDefaultBlockModel(block, itemBlock) }
+                    ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, ModelResourceLocation(block.registryName, "inventory"))
             }
 
             override fun getEntryName(annotation: RegisterBlock): String = annotation.name
             override fun isEnabled(name: String): Boolean = features.isBlockEnabled(name)
         })
-    }
-
-    private fun setDefaultBlockModel(b: Block, i: ItemBlock) {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(b), 0, ModelResourceLocation(b.registryName, "inventory"))
-        Minecraft.getMinecraft().renderItem.itemModelMesher.register(i, 0, ModelResourceLocation(i.registryName, "inventory"))
     }
 
     companion object Factory {
@@ -170,11 +161,13 @@ class ConfigProvider() {
                     @Suppress("UNCHECKED_CAST")
                     val fieldType = field.type as Class<out I>
                     val entry = factory.construct(name, fieldType)
+
                     try {
                         field.set(null, entry)
                     } catch (e: Exception) {
                         throw Throwables.propagate(e)
                     }
+
                     processor.process(entry, annotation)
                 }
             }

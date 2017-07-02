@@ -13,6 +13,7 @@ import net.minecraft.world.World
 
 class BlockActivatedEvent(val world: World, val pos: BlockPos, val state: IBlockState, val player: EntityPlayer, val hand: EnumHand, val facing: EnumFacing, val hitx: Float, val hitY: Float, val hitZ: Float)
 class BlockBrokenEvent(val world: World, val pos: BlockPos)
+class BlockBreakEvent(val world: World, val pos: BlockPos, val state: IBlockState)
 class BlockPlacedEvent(val world: World, val pos: BlockPos, state: IBlockState, placer: EntityLivingBase, stack: ItemStack)
 class BlockAddedEvent(val world: World, val pos: BlockPos, val state: IBlockState)
-class NeighborChangedEvent(val world: IBlockAccess, val pos: BlockPos, val state: IBlockState)
+class NeighborChangedEvent(val world: IBlockAccess, val pos: BlockPos, val neighborPos: BlockPos, val neighborState: IBlockState)

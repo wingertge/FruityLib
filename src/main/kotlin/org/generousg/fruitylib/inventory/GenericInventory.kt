@@ -17,7 +17,7 @@ import org.generousg.fruitylib.util.ItemUtils
 import org.generousg.fruitylib.util.events.Event
 import org.generousg.fruitylib.util.events.InventoryChangedEvent
 
-
+// TODO: Rewrite for IItemHandler
 open class GenericInventory(protected val inventoryName: String, protected val isInvNameLocalized: Boolean, protected var size: Int) : IInventory {
     override fun getField(id: Int): Int = 0
     override fun clear() = clearAndSetSlotCount(size)

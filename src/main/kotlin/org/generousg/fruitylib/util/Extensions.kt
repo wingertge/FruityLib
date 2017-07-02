@@ -3,7 +3,12 @@
 package org.generousg.fruitylib
 
 import mcjty.lib.tools.ItemStackTools
+import net.minecraft.block.state.IBlockState
 import net.minecraft.item.ItemStack
+import net.minecraft.util.EnumFacing
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Vec3i
+import net.minecraft.world.IBlockAccess
 
 
 @Suppress("UNCHECKED_CAST")
@@ -19,3 +24,17 @@ fun ItemStack.isNullOrEmpty(): Boolean {
 
 fun ItemStack.empty() = ItemStackTools.makeEmpty(this)
 val emptyItemStack get() = ItemStackTools.getEmptyStack()
+
+fun IBlockAccess.getBlockInDirection(direction: EnumFacing, pos: BlockPos): IBlockState {
+    return this.getBlockState(pos.add(Vec3i(direction.frontOffsetX, direction.frontOffsetY, direction.frontOffsetZ)))
+}
+
+fun <T> Iterable<T>.join(other: Iterable<T>): MutableCollection<T> {
+    val result = arrayListOf<T>()
+    this.forEach { result.add(it) }
+    other.forEach { result.add(it) }
+    return result
+}
+
+fun BlockPos.subtract(x: Int, y: Int, z: Int): BlockPos = this.subtract(Vec3i(x, y, z))
+fun BlockPos.inDirection(direction: EnumFacing) = this.add(direction.frontOffsetX, direction.frontOffsetY, direction.frontOffsetZ)

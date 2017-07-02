@@ -28,7 +28,7 @@ class RpcSetup internal constructor() {
     }
 
     fun registerInterface(intf: Class<*>): RpcSetup {
-        require(Loader.instance().isInState(LoaderState.PREINITIALIZATION)) { "This method can only be called in pre-initialization state" }
+        require(Loader.instance().isInState(LoaderState.PREINITIALIZATION)) { "This method can only be called in pre-initialization neighborState" }
         require(intf.isInterface) { "Class $intf is not interface" }
 
         for(method in intf.methods) {
@@ -45,7 +45,7 @@ class RpcSetup internal constructor() {
     }
 
     fun registerTargetWrapper(wrapperCls: Class<out IRpcTarget>): RpcSetup {
-        Preconditions.checkState(Loader.instance().isInState(LoaderState.PREINITIALIZATION), "This method can only be called in pre-initialization state")
+        Preconditions.checkState(Loader.instance().isInState(LoaderState.PREINITIALIZATION), "This method can only be called in pre-initialization neighborState")
         targetsStoreBuilder.addEntry(wrapperCls.name, currentWrapperId++)
         return this
     }

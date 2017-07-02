@@ -84,7 +84,7 @@ class IdSyncManager private constructor() : DataStoreManager() {
 
     fun <K, V> createDataStore(domain: String, id: String, keyClass: Class<out K>, valueClass: Class<out V>) = createDataStore("$domain:$id", keyClass, valueClass)
     override fun <K, V> createDataStore(id: String, keyClass: Class<out K>, valueClass: Class<out V>): DataStoreBuilder<K, V> {
-        require(!Loader.instance().hasReachedState(LoaderState.POSTINITIALIZATION)) { "This method cannot be called in post-initialization state and later" }
+        require(!Loader.instance().hasReachedState(LoaderState.POSTINITIALIZATION)) { "This method cannot be called in post-initialization neighborState and later" }
         return super.createDataStore(id, keyClass, valueClass)
     }
 

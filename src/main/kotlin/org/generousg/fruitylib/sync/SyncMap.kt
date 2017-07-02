@@ -170,8 +170,7 @@ abstract class SyncMap<out H : ISyncMapProvider>(protected val handler: H) {
         if(!changes.isEmpty()) updateEvent.fire(SyncEvent(Collections.unmodifiableSet(changes)))
     }
 
-    @Throws(IOException::class)
-    private fun writeToStream(dataOutputStream: DataOutputStream, fullPacket: Boolean) {
+    @Throws(IOException::class) fun writeToStream(dataOutputStream: DataOutputStream, fullPacket: Boolean) {
         var mask = 0
         for(i in 0..index-1) {
             val objectt = objects[i]

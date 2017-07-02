@@ -23,7 +23,7 @@ class NetworkEventManager private constructor() {
         }
 
         fun register(cls: Class<out NetworkEvent>): RegistrationContext {
-            Preconditions.checkState(Loader.instance().isInState(LoaderState.PREINITIALIZATION), "This method can only be called in pre-initialization state")
+            Preconditions.checkState(Loader.instance().isInState(LoaderState.PREINITIALIZATION), "This method can only be called in pre-initialization neighborState")
 
             builder.addEntry(cls.name, currentId++)
             return this
@@ -42,7 +42,7 @@ class NetworkEventManager private constructor() {
     private var registrationContext: RegistrationContext? = RegistrationContext()
 
     fun startRegistration(): RegistrationContext {
-        Preconditions.checkState(Loader.instance().isInState(LoaderState.PREINITIALIZATION), "This method can only be called in pre-initialization state")
+        Preconditions.checkState(Loader.instance().isInState(LoaderState.PREINITIALIZATION), "This method can only be called in pre-initialization neighborState")
         return registrationContext!!
     }
 

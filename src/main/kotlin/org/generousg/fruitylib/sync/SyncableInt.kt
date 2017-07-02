@@ -4,11 +4,14 @@ import net.minecraft.nbt.NBTTagCompound
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
-import kotlin.properties.Delegates
 
 
 class SyncableInt : SyncableObjectBase, ISyncableValueProvider<Int> {
-    override var value: Int by Delegates.observable(0, { _, oldValue, newValue -> if(oldValue != newValue) markDirty() })
+    private var _value = 0
+    override var value: Int set(nValue) {
+        if(nValue != _value) markDirty()
+        _value = nValue
+    } get() = _value
 
     constructor(value: Int) {
         this.value = value
@@ -18,7 +21,7 @@ class SyncableInt : SyncableObjectBase, ISyncableValueProvider<Int> {
 
     @Throws(IOException::class)
     override fun readFromStream(stream: DataInputStream) {
-        value = stream.readInt()
+        _value = stream.readInt()
     }
 
     fun modify(by: Int) {
@@ -27,7 +30,7 @@ class SyncableInt : SyncableObjectBase, ISyncableValueProvider<Int> {
 
     fun set(`val`: Int) {
         if (`val` != value) {
-            value = `val`
+            _value = `val`
             markDirty()
         }
     }
@@ -47,7 +50,7 @@ class SyncableInt : SyncableObjectBase, ISyncableValueProvider<Int> {
 
     override fun readFromNBT(nbt: NBTTagCompound, name: String) {
         if (nbt.hasKey(name)) {
-            value = nbt.getInteger(name)
+            _value = nbt.getInteger(name)
         }
     }
 }

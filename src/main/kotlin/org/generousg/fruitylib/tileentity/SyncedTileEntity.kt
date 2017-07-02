@@ -19,7 +19,7 @@ abstract class SyncedTileEntity : FruityTileEntity(), ISyncMapProvider {
 
     init {
         createSyncedFields()
-        SyncObjectScanner.instance.value.registerAllFields(syncMap, this)
+        SyncObjectScanner.instance.registerAllFields(syncMap, this)
 
         syncMap.syncEvent += { markUpdated() }
     }

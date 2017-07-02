@@ -7,6 +7,7 @@ import com.google.common.collect.UnmodifiableIterator;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Set;
 
 public class ByteUtils {
@@ -84,6 +85,18 @@ public class ByteUtils {
         return (val & (1 << slot)) != 0;
     }
 
+    public static String readString(DataInput input, int length) {
+        byte[] bytes = new byte[length];
+        for (int i = 0; i < length; i++) {
+            try {
+                bytes[i] = input.readByte();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return Arrays.toString(bytes);
+    }
+
     public static void writeVLI(DataOutput output, int value) {
         // I'm not touching signed integers.
         Preconditions.checkArgument(value >= 0, "Value cannot be negative");
@@ -148,5 +161,19 @@ public class ByteUtils {
         }
 
         return value;
+    }
+
+    public static short combineBytes(byte byte1, byte byte2) {
+        int byte1AsShort = (short)byte1;
+        int byte2AsShort = ((short)byte2) << 8;
+        int result = byte1AsShort | byte2AsShort;
+        return (short)result;
+    }
+
+    public static byte[] splitBytes(short combined) {
+        byte[] result = new byte[2];
+        result[0] = (byte)combined;
+        result[1] = (byte)(combined >> 8);
+        return result;
     }
 }

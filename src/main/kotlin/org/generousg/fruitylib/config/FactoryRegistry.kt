@@ -6,7 +6,7 @@ import com.google.common.collect.Maps
 import net.minecraft.block.Block
 
 
-class FactoryRegistry<T : Any> {
+open class FactoryRegistry<T : Any> {
     interface Factory<out T> {
         fun construct(): T
     }
@@ -15,9 +15,7 @@ class FactoryRegistry<T : Any> {
     private val customItemBlockFactories = Maps.newHashMap<String, (Block) -> T>()
 
     fun registerFactory(feature: String, factory: Factory<T>) = customFactories.put(feature, factory)
-    fun registerItemBlockFactory(feature: String, factory: (Block) -> T) {
-
-    }
+    fun registerItemBlockFactory(feature: String, factory: (Block) -> T) = customItemBlockFactories.put(feature, factory)
 
     fun <C: T> construct(feature: String, clazz: Class<out C>) : C {
         val customFactory = customFactories[feature]

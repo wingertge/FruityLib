@@ -40,7 +40,7 @@ class RpcCallDispatcher private constructor(): Dispatcher() {
     }
 
     fun startRegistration(): RpcSetup {
-        Preconditions.checkState(Loader.instance().isInState(LoaderState.PREINITIALIZATION), "This method can only be called in pre-initialization state")
+        Preconditions.checkState(Loader.instance().isInState(LoaderState.PREINITIALIZATION), "This method can only be called in pre-initialization neighborState")
         return setup!!
     }
 

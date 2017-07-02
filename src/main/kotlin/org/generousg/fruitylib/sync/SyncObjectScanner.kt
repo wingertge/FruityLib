@@ -40,6 +40,6 @@ class SyncObjectScanner : FieldsSelector() {
     }
 
     companion object {
-        val instance = lazy { SyncObjectScanner() }
+        val instance by lazy { SyncObjectScanner() }
     }
 }

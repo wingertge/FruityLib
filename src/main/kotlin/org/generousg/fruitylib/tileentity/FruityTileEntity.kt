@@ -1,11 +1,9 @@
 package org.generousg.fruitylib.tileentity
 
-import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
-import net.minecraft.world.World
 import org.generousg.fruitylib.blocks.FruityBlock
 import org.generousg.fruitylib.inventory.GenericInventory
 import org.generousg.fruitylib.network.DimCoord
@@ -35,7 +33,6 @@ abstract class FruityTileEntity : TileEntity(), IRpcTargetProvider {
 
     fun isAirBlock(facing: EnumFacing) = world?.isAirBlock(BlockPos(pos.x + facing.frontOffsetX, pos.y + facing.frontOffsetY, pos.z + facing.frontOffsetZ)) ?: false
     fun sendBlockEvent(event: Int, param: Int) = world?.addBlockEvent(pos, blockType, event, param)
-    override fun shouldRefresh(world: World, pos: BlockPos, oldState: IBlockState, newSate: IBlockState): Boolean = oldState != newSate
     fun openGui(instance: Any, player: EntityPlayer) = player.openGui(instance, FruityBlock.FRUITY_LIB_TE_GUI, world, pos.x, pos.y, pos.z)
     fun isRenderedInInventory() = isUsedForClientInventoryRendering
     override fun createRpcTarget(): IRpcTarget = TileEntityRpcTarget(this)
