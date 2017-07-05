@@ -12,13 +12,13 @@ abstract class SyncedGuiContainer<out T : ContainerBase<out ISyncMapProvider>>(c
     private val dispatcher = lazy {
         val tempDispatcher = ValueUpdateDispatcher()
         listenerLambda = { tempDispatcher.trigger(it.changes) }
-        getContainer().owner.syncMap.updateEvent += { tempDispatcher.trigger(it.changes) }
+        getContainer().owner.syncMap.receivedSyncEvent += { tempDispatcher.trigger(it.changes) }
         return@lazy tempDispatcher
     }
 
     fun addSyncUpdateListener(action: IValueUpdateAction) = dispatcher.value.addAction(action)
     override fun onGuiClosed() {
         super.onGuiClosed()
-        if(listenerLambda != null) getContainer().owner.syncMap.updateEvent -= listenerLambda as ((SyncMap.SyncEvent)->Unit)
+        if(listenerLambda != null) getContainer().owner.syncMap.receivedSyncEvent -= listenerLambda as ((SyncMap.SyncEvent)->Unit)
     }
 }

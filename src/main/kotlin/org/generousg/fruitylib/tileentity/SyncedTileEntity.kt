@@ -1,6 +1,7 @@
 package org.generousg.fruitylib.tileentity
 
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.world.chunk.Chunk
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket
 import org.generousg.fruitylib.network.rpc.RpcCallDispatcher
 import org.generousg.fruitylib.network.rpc.targets.SyncRpcTarget
@@ -16,12 +17,13 @@ abstract class SyncedTileEntity : FruityTileEntity(), ISyncMapProvider {
     override val syncMap: SyncMap<*> = SyncMapTile(this)
 
     private var tagSerializer: DropTagSerializer? = null
+    protected val chunk: Chunk by lazy { world.getChunkFromBlockCoords(pos) }
 
     init {
         createSyncedFields()
         SyncObjectScanner.instance.registerAllFields(syncMap, this)
 
-        syncMap.syncEvent += { markUpdated() }
+        syncMap.sentSyncEvent += { markUpdated() }
     }
 
     protected val dropSerializer: DropTagSerializer
@@ -63,5 +65,9 @@ abstract class SyncedTileEntity : FruityTileEntity(), ISyncMapProvider {
         val target = SyncRpcTarget.SyncTileEntityRpcTarget(this, `object`)
         val sender = RpcCallDispatcher.instance.value.senders.client
         return RpcCallDispatcher.instance.value.createProxy(target, sender, mainIntf, *extraIntf)
+    }
+
+    override fun getUpdateTag(): NBTTagCompound {
+        return writeToNBT(NBTTagCompound())
     }
 }

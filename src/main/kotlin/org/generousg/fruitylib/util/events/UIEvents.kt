@@ -12,6 +12,6 @@ class MouseDragEvent(val component: BaseComponent, mouseX: Int, mouseY: Int, mou
 class ButtonClickedEvent(val player: EntityPlayer, val buttonId: Int)
 class SideToggledEvent(val side: EnumFacing, val currentState: Boolean)
 
-class InventoryChangedEvent(val inventory: IInventory, val slotNumber: Int)
+class InventoryChangedEvent(val inventory: IInventory)
 
 class ValueChangedEvent<T>(val value: T, val prev: T)

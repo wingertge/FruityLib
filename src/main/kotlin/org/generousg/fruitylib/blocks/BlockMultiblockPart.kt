@@ -22,13 +22,13 @@ abstract class BlockMultiblockPart(material: Material) : FruityBlock(material) {
         placeEvent += {
             if(!it.world.isRemote) {
                 val te = it.world.getTileEntity(it.pos) as TileEntityMultiblockPart
-                te.rebuild(it.pos)
+                te.startRebuild(it.pos)
             }
         }
         breakEvent += {
             if(!it.world.isRemote) {
                 val te = it.world.getTileEntity(it.pos) as TileEntityMultiblockPart
-                if(te.multiblockId.value != -1) (it.world.getEntityByID(te.multiblockId.value) as? EntityMultiblock)?.destroy()
+                if(te.multiblockId.value != 0) (it.world.getEntityByID(te.multiblockId.value) as? EntityMultiblock)?.destroy()
             }
         }
     }

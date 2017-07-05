@@ -28,6 +28,7 @@ class FruityLib {
         var proxy: FruityLibProxy? = null
         val eventQueue = EventQueue()
         val FRUITY_LIB_TE_GUI = ""
+        var DEBUG_MODE = false
     }
 
     @Mod.EventHandler

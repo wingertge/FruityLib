@@ -5,7 +5,7 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import org.generousg.fruitylib.blocks.FruityBlock
-import org.generousg.fruitylib.inventory.GenericInventory
+import org.generousg.fruitylib.inventory.InventorySerializable
 import org.generousg.fruitylib.network.DimCoord
 import org.generousg.fruitylib.network.rpc.IRpcTarget
 import org.generousg.fruitylib.network.rpc.IRpcTargetProvider
@@ -19,7 +19,7 @@ abstract class FruityTileEntity : TileEntity(), IRpcTargetProvider {
     private val isUsedForClientInventoryRendering = false
 
     val dimCoords get() = DimCoord(world.provider.dimension, getPos().x, getPos().y, getPos().z)
-    val block = lazy { world.getBlockState(pos).block }
+    val block by lazy { world.getBlockState(pos).block }
 
     /** Place for TE specific setup. Called once upon creation */
     open fun setup() {}
@@ -55,7 +55,7 @@ abstract class FruityTileEntity : TileEntity(), IRpcTargetProvider {
 
     fun markUpdated() = world.markAndNotifyBlock(pos, world.getChunkFromBlockCoords(pos), world.getBlockState(pos), world.getBlockState(pos), 2)
 
-    protected fun registerInventoryCallback(inventory: GenericInventory): GenericInventory {
+    protected fun registerInventoryCallback(inventory: InventorySerializable): InventorySerializable {
         inventory.inventoryChangedEvent += { markUpdated() }
         return inventory
     }

@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
+import org.generousg.fruitylib.FruityLib
 import org.generousg.fruitylib.blocks.FruityBlock
 
 class WailaIntegration private constructor(): IWailaDataProvider {
@@ -36,6 +37,11 @@ class WailaIntegration private constructor(): IWailaDataProvider {
     override fun getWailaHead(itemStack: ItemStack, currenttip: MutableList<String>, accessor: IWailaDataAccessor, config: IWailaConfigHandler): MutableList<String> {
         val block = accessor.block
         if(block is FruityBlock && block.hasInfo) block.addInformation(accessor.stack, accessor.player, currenttip, false)
+        if(FruityLib.DEBUG_MODE) {
+            for ((key, value) in accessor.block.getActualState(accessor.blockState, accessor.world, accessor.position).properties) {
+                currenttip.add("${key.getName()}: ${(value as Enum<*>).name}")
+            }
+        }
         return currenttip
     }
 
