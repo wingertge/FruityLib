@@ -7,6 +7,7 @@ import java.io.DataInput
 import java.io.DataOutput
 
 
+@Suppress("UNUSED_PARAMETER")
 class ClassSerializersProvider {
     private object InstanceHolder {
         val INSTANCE = ClassSerializersProvider()

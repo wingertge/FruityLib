@@ -53,7 +53,7 @@ abstract class SyncMap<out H : ISyncMapProvider>(protected val handler: H) {
                     val entity = world.getEntityByID(entityId)
                     if(entity is ISyncMapProvider) return entity
 
-                    Log.warn("Invalid handler info: can't find ISyncHandler entity id $entityId")
+                    Log.warn("Invalid handler info: can't find ISyncHandler multiblockEntity id $entityId")
                     return null
                 }
 
@@ -236,10 +236,8 @@ abstract class SyncMap<out H : ISyncMapProvider>(protected val handler: H) {
             Log.warn(e, "IOError during full sync")
         }
 
-        if(hasChanges) {
-            markClean(changes)
-            sentSyncEvent.fire(SyncEvent(Collections.unmodifiableSet(changes)))
-        }
+        if(hasChanges) markClean(changes)
+        sentSyncEvent.fire(SyncEvent(Collections.unmodifiableSet(changes)))
     }
 
     @Suppress("UNCHECKED_CAST")

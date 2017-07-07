@@ -11,6 +11,7 @@ import java.io.DataOutput
 import java.io.IOException
 
 
+@Suppress("unused", "UNUSED_PARAMETER")
 abstract class NetworkEvent : Event() {
 
     internal val replies: MutableList<NetworkEvent> = Lists.newArrayList<NetworkEvent>()

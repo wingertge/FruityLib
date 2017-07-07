@@ -97,7 +97,10 @@ abstract class FruityBlock(material: Material, var hasInfo: Boolean = false) : B
 
         if(!worldIn.isRemote && hasCapability(IHasGui::class)) {
             val te = worldIn.getTileEntity(pos)
-            if(te is IHasGui && te.canOpenGui(playerIn) && !playerIn.isSneaking) openGui(playerIn, worldIn, pos.x, pos.y, pos.z)
+            if(te is IHasGui && te.canOpenGui(playerIn) && !playerIn.isSneaking) {
+                openGui(playerIn, worldIn, pos.x, pos.y, pos.z)
+                return true
+            }
         }
         return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)
     }

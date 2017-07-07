@@ -9,15 +9,15 @@ import org.generousg.fruitylib.util.Log
 class SyncObjectScanner : FieldsSelector() {
 
     override fun listFields(cls: Class<*>): List<FieldEntry> {
-        var cls = cls
+        var cls1 = cls
         val result = Lists.newArrayList<FieldEntry>()
 
-        while (cls != Any::class.java) {
-            cls.declaredFields
+        while (cls1 != Any::class.java) {
+            cls1.declaredFields
                     .filter { ISyncableObject::class.java.isAssignableFrom(it.type) }
                     .mapTo(result) { FieldEntry(it, 0) }
 
-            cls = cls.superclass
+            cls1 = cls1.superclass
         }
 
         return result

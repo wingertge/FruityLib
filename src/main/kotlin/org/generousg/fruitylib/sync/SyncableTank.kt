@@ -103,8 +103,8 @@ class SyncableTank : GenericTank, ISyncableObject, ISyncableValueProvider<FluidS
         return filled
     }
 
-    override fun drain(stack: FluidStack?, doDrain: Boolean): FluidStack? {
-        val drained = super.drain(stack, doDrain)
+    override fun drain(resource: FluidStack?, doDrain: Boolean): FluidStack? {
+        val drained = super.drain(resource, doDrain)
         if (doDrain && drained != null) markDirty()
         return drained
     }

@@ -10,9 +10,9 @@ open class BaseGuiContainer<out T : ContainerBase<*>>(container: T, width: Int, 
     val xPos get() = (width - xSize) / 2
     val yPos get() = (height - ySize) / 2
 
-    override fun createRoot(): BaseComposite = GuiComponentPanel(0, 0, xSize, ySize, getContainer())
+    override fun createRoot(): BaseComposite = GuiComponentPanel(0, 0, xSize, ySize, container)
 
-    fun getContainer(): T = inventorySlots as T
+    val container: T get() = inventorySlots as T
 
     override fun drawGuiContainerForegroundLayer(mouseX: Int, mouseY: Int) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY)
@@ -23,5 +23,5 @@ open class BaseGuiContainer<out T : ContainerBase<*>>(container: T, width: Int, 
         fontRendererObj.drawString(translatedName, 8, this.ySize - 96 + 2, 4210752)
     }
 
-    fun sendButtonClick(buttonId: Int) = mc.playerController.sendEnchantPacket(getContainer().windowId, buttonId)
+    fun sendButtonClick(buttonId: Int) = mc.playerController.sendEnchantPacket(container.windowId, buttonId)
 }

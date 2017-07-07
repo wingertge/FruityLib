@@ -77,6 +77,7 @@ class ArraySerializerProvider : ISerializerProvider {
         }
     }
 
+    @Suppress("NAME_SHADOWING")
     private fun createNullableSerializer(componentType: TypeToken<*>): IStreamSerializer<*> = object: NullableCollectionSerializer<Any?>(componentType) {
         override fun createCollection(componentType: TypeToken<*>, length: Int): Any? = Array.newInstance(componentType.rawType, length)
         override fun getLength(collection: Any?): Int = Array.getLength(collection)

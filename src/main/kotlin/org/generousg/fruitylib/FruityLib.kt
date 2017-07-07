@@ -1,6 +1,7 @@
 package org.generousg.fruitylib
 
 import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.common.capabilities.CapabilityManager
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.SidedProxy
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
@@ -9,6 +10,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 import org.generousg.fruitylib.config.ConfigStorage
 import org.generousg.fruitylib.flowcontrol.EventQueue
 import org.generousg.fruitylib.integration.Integration
+import org.generousg.fruitylib.inventory.IExtendedItemHandler
+import org.generousg.fruitylib.liquids.IExtendedFluidHandler
 import org.generousg.fruitylib.network.IdSyncManager
 import org.generousg.fruitylib.network.event.NetworkEventManager
 import org.generousg.fruitylib.network.rpc.RpcCallDispatcher
@@ -33,6 +36,7 @@ class FruityLib {
 
     @Mod.EventHandler
     fun preInit(event: FMLPreInitializationEvent) {
+        registerCapabilities()
         SyncChannelHolder.ensureLoaded()
         NetworkEventManager.instance.value.startRegistration()
         RpcCallDispatcher.instance.value.startRegistration()
@@ -69,5 +73,10 @@ class FruityLib {
         //after all builders are done
         IdSyncManager.instance.value.finishLoading()
         ItemUtils.fixVanillaFuelValues()
+    }
+
+    private fun registerCapabilities() {
+        CapabilityManager.INSTANCE.register(IExtendedItemHandler::class.java, IExtendedItemHandler.Storage(), IExtendedItemHandler.Factory())
+        CapabilityManager.INSTANCE.register(IExtendedFluidHandler::class.java, IExtendedFluidHandler.Storage(), IExtendedFluidHandler.Factory())
     }
 }

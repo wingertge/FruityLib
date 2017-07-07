@@ -22,7 +22,7 @@ class InboundSyncHandler : SimpleChannelInboundHandler<FMLProxyPacket>() {
 
         val provider = SyncMap.findSyncMap(world!!, input)
         try {
-            if(provider != null) provider.syncMap.readFromStream(input)
+            provider?.syncMap?.readFromStream(input)
         } catch (e: Throwable) {
             throw SyncException(e, provider!!)
         }

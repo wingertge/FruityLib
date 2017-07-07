@@ -49,7 +49,7 @@ class GuiComponentPanel(x: Int, y: Int, width: Int, height: Int, private val con
         BOX_RENDERER.render(this, this.x + x, this.y + y, width, height, (0xFFFFFFFF + Int.MIN_VALUE).toInt())
     }
 
-    override fun renderComponentForeground(minecraft: Minecraft, x: Int, y: Int, mouseX: Int, mouseY: Int) {
+    override fun renderComponentForeground(minecraft: Minecraft, offsetX: Int, offsetY: Int, mouseX: Int, mouseY: Int) {
         GL11.glColor3f(1f, 1f, 1f)
         bindComponentSheet()
 

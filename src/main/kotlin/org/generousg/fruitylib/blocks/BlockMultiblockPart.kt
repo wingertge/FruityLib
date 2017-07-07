@@ -7,12 +7,14 @@ import net.minecraft.block.state.IBlockState
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
-import org.generousg.fruitylib.multiblock.EntityMultiblock
+import net.minecraftforge.fml.common.FMLCommonHandler
+import net.minecraftforge.fml.relauncher.Side
 import org.generousg.fruitylib.multiblock.MultiblockPart
 import org.generousg.fruitylib.multiblock.TileEntityMultiblockPart
 import kotlin.reflect.KClass
 
 
+@Suppress("OverridingDeprecatedMember")
 abstract class BlockMultiblockPart(material: Material) : FruityBlock(material) {
     companion object {
         val MB_PART = PropertyEnum.create("mb_part", MultiblockPart::class.java)!!
@@ -25,14 +27,21 @@ abstract class BlockMultiblockPart(material: Material) : FruityBlock(material) {
                 te.startRebuild(it.pos)
             }
         }
+        neighborChangedEvent += {
+            if(FMLCommonHandler.instance().effectiveSide == Side.SERVER) {
+                val te = it.world.getTileEntity(it.pos) as TileEntityMultiblockPart
+                te.startRebuild(it.pos)
+            }
+        }
         breakEvent += {
             if(!it.world.isRemote) {
                 val te = it.world.getTileEntity(it.pos) as TileEntityMultiblockPart
-                if(te.multiblockId.value != 0) (it.world.getEntityByID(te.multiblockId.value) as? EntityMultiblock)?.destroy()
+                te.multiblockEntity?.destroy(it.pos)
             }
         }
     }
 
+    @Suppress("OverridingDeprecatedMember")
     override fun getStateFromMeta(meta: Int): IBlockState {
         val facing = EnumFacing.getFront(meta + 2)
         return defaultState.withProperty(FACING, facing)

@@ -8,7 +8,12 @@ import org.generousg.fruitylib.sync.SyncedEntity
 
 
 abstract class EntityMultiblock(world: World) : SyncedEntity(world) {
-    abstract fun destroy()
+    override fun entityInit() {
+        super.entityInit()
+        setSize(0f, 0f)
+    }
+
+    abstract fun destroy(pos: BlockPos)
     override fun canRenderOnFire(): Boolean = false
     override fun canBeCollidedWith(): Boolean = false
     override fun canBePushed(): Boolean = false

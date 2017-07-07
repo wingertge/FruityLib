@@ -11,6 +11,8 @@ import net.minecraft.item.ItemBlock
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.model.ModelLoader
+import net.minecraftforge.fluids.Fluid
+import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.Loader
 import net.minecraftforge.fml.common.registry.GameRegistry
@@ -84,6 +86,36 @@ class ConfigProvider() {
 
     fun setLanguageModId(modId: String) = langDecorator.setMod(modId)
     fun setGeneralModId(modId: String) = genericDecorator.setMod(modId)
+
+    fun registerFluids(cls: Class<out FluidInstances>) {
+        for(field in cls.fields) {
+            if(Modifier.isStatic(field.modifiers) && Fluid::class.java.isAssignableFrom(field.type)) {
+                if(field.isAnnotationPresent(IgnoreFeature::class.java)) continue
+                val annotation = field.getAnnotation(RegisterFluid::class.java)
+                if(annotation == null) {
+                    Log.warn("Field $field has valid type ${Fluid::class.java} for registration, but no annotation ${RegisterFluid::class.java}")
+                    continue
+                }
+                val name = annotation.name
+                if(!features.isFluidEnabled(name)) {
+                    Log.info("Fluid $name (from field $field) is disabled")
+                    continue
+                }
+                val existing = FluidRegistry.getFluid(name)
+                if(existing != null) {
+                    field.set(null, existing)
+                    continue
+                }
+                val new = field.get(null) as Fluid
+                setFluidPrefixedId(annotation.unlocalizedName, name, langDecorator, { new.unlocalizedName = it })
+                val result = new.setLuminosity(annotation.luminosity).setDensity(annotation.density).setViscosity(annotation.viscosity).setGaseous(annotation.gaseous).setTemperature(annotation.temperature)
+                FluidRegistry.registerFluid(result)
+                if(annotation.hasBucket) FluidRegistry.addBucketForFluid(result)
+
+                field.set(null, result)
+            }
+        }
+    }
 
     fun registerItems(clazz: Class<out ItemInstances>) {
         processAnnotations(clazz, Item::class.java, RegisterItem::class.java, itemFactory, object : IAnnotationProcessor<Item, RegisterItem> {
@@ -181,5 +213,6 @@ class ConfigProvider() {
 
         private fun setItemPrefixedId(id: String, itemName: String, decorator: IdDecorator, setter: (id: String) -> Unit) = setPrefixedId(id, itemName, decorator, setter, "[none]", "[default]")
         private fun setBlockPrefixedId(id: String, blockName: String, decorator: IdDecorator, setter: (id: String) -> Unit) = setPrefixedId(id, blockName, decorator, setter, "[none]", "[default]")
+        private fun setFluidPrefixedId(id: String, fluidName: String, decorator: IdDecorator, setter: (id: String) -> Unit) = setPrefixedId(id, fluidName, decorator, setter, "[none]", "[default]")
     }
 }

@@ -25,7 +25,7 @@ class TypeUtils {
             val mapVars = Map::class.java.typeParameters
             MAP_KEY_PARAM = mapVars[0]
             MAP_VALUE_PARAM = mapVars[1]
-            val functionVars = Function::class.java.typeParameters
+            val functionVars = com.google.common.base.Function::class.java.typeParameters
             FUNCTION_A_PARAM = functionVars[0]
             FUNCTION_B_PARAM = functionVars[1]
         }

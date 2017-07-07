@@ -7,6 +7,7 @@ import org.generousg.fruitylib.util.events.MouseClickEvent
 import org.generousg.fruitylib.util.events.MouseDragEvent
 
 
+@Suppress("UNUSED_PARAMETER")
 abstract class BaseComposite(x: Int, y: Int) : BaseComponent(x, y) {
     protected val components = arrayListOf<BaseComponent>()
     protected val tickingComponents = arrayListOf<BaseComponent>()

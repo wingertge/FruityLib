@@ -14,9 +14,9 @@ open class PacketSenderBase(private val channel: Channel) : IPacketSender {
         cleanupChannel(channel)
     }
 
-    override fun sendMessages(msgs: Collection<Any?>) {
+    override fun sendMessages(msg: Collection<Any?>) {
         configureChannel(channel)
-        for(msg in msgs) channel.write(msg).addListener(NetUtils.LOGGING_LISTENER)
+        for(msg1 in msg) channel.write(msg1).addListener(NetUtils.LOGGING_LISTENER)
         channel.flush()
         cleanupChannel(channel)
     }

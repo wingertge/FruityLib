@@ -12,6 +12,7 @@ import java.io.IOException
 import java.util.*
 
 
+@Suppress("unused")
 object CollectionUtils {
 
     val rnd = Random()
@@ -21,11 +22,7 @@ object CollectionUtils {
         return collection.iterator().next()
     }
 
-    fun <T> getRandom(collection: Collection<T>): T {
-        return getRandom(collection, rnd)!!
-    }
-
-    fun <T> getRandom(collection: Collection<T>, rand: Random): T? {
+    fun <T> getRandom(collection: Collection<T>): T? {
         val size = collection.size
         Preconditions.checkArgument(size > 0, "Can't select from empty collection")
         if (size == 1) return getFirst(collection)
@@ -33,16 +30,12 @@ object CollectionUtils {
         var i = 0
         for (obj in collection) {
             if (i == randomIndex) return obj
-            i = i + 1
+            i += 1
         }
         return null
     }
 
-    fun <T> getRandom(list: List<T>): T {
-        return getRandom(list, rnd)!!
-    }
-
-    fun <T> getRandom(list: List<T>, rand: Random): T? {
+    fun <T> getRandom(list: List<T>): T? {
         val size = list.size
         Preconditions.checkArgument(size > 0, "Can't select from empty list")
         if (size == 0) return null
@@ -129,6 +122,7 @@ object CollectionUtils {
         return java.lang.reflect.Array.newInstance(typeB.getRawType(), length)
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun <A, B> transform(input: Array<A>, transformer: com.google.common.base.Function<A, B>): Array<B> {
         val result = allocateArray(transformer, input.size)
 
@@ -140,6 +134,7 @@ object CollectionUtils {
         return result as Array<B>
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun <A, B> transform(input: Collection<A>, transformer: com.google.common.base.Function<A, B>): Array<B> {
         val result = allocateArray(transformer, input.size)
 

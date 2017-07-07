@@ -17,6 +17,7 @@ import java.util.*
 
 
 class ListSerializerProvider : IGenericSerializerProvider {
+    @Suppress("NAME_SHADOWING")
     override fun getSerializer(type: Type): IStreamSerializer<*>? {
         val typeToken = TypeToken.of(type)
 

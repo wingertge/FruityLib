@@ -15,6 +15,7 @@ import java.lang.reflect.Method
 import java.lang.reflect.Type
 
 
+@Suppress("UNUSED_PARAMETER")
 class MethodParamsCodec(private val method: Method) {
     companion object {
         private val INSTANCES = object : CachedFactory<Method, MethodParamsCodec>() {

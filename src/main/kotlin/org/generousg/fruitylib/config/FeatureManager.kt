@@ -29,6 +29,12 @@ class FeatureManager : AbstractFeatureManager() {
                 .forEach { features.put(CATEGORY_BLOCKS, it.name, FeatureEntry(it.enabled, it.configurable))}
     }
 
+    fun collectFluids(fluidContainer: Class<out FluidInstances>) {
+        fluidContainer.fields
+                .mapNotNull { it.getAnnotation(RegisterFluid::class.java) }
+                .forEach { features.put(CATEGORY_FLUIDS, it.name, FeatureEntry(it.enabled, it.configurable)) }
+    }
+
     fun loadFromConfig(config: Configuration): ImmutableTable<String, String, Property> {
         val properties = HashBasedTable.create<String, String, Property>()
         for(cell in features.cellSet()) {

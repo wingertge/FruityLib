@@ -14,10 +14,10 @@ open class TargetedPacketSenderBase<T>(private val channel: Channel) : ITargeted
         cleanupChannel(channel)
     }
 
-    override fun sendMessages(msgs: Collection<Any?>, target: T) {
+    override fun sendMessages(msg: Collection<Any?>, target: T) {
         configureChannel(channel, target)
 
-        for(msg in msgs) channel.write(msg).addListener(NetUtils.LOGGING_LISTENER)
+        for(msg1 in msg) channel.write(msg1).addListener(NetUtils.LOGGING_LISTENER)
 
         channel.flush()
         cleanupChannel(channel)

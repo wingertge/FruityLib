@@ -16,8 +16,9 @@ import org.generousg.fruitylib.util.CollectionUtils
 import java.util.*
 
 
-open class GenericTank : FluidTank {
-
+open class GenericTank : FluidTank, IExtendedFluidHandler {
+    override val contents: FluidStack? get() = fluid
+    override val maxAmount: Int get() = super.capacity
     private var surroundingTanks: List<EnumFacing> = Lists.newArrayList()
     private val filter: IFluidFilter
 
@@ -37,7 +38,7 @@ open class GenericTank : FluidTank {
         this.filter = Companion.filter(*CollectionUtils.transform(acceptableFluids.asList(), FLUID_CONVERTER))
     }
 
-    open override fun drain(resource: FluidStack?, doDrain: Boolean): FluidStack? {
+    override fun drain(resource: FluidStack?, doDrain: Boolean): FluidStack? {
         if (resource == null ||
                 fluid == null ||
                 fluid!!.isFluidEqual(resource))
@@ -86,11 +87,11 @@ open class GenericTank : FluidTank {
                 if (drainedFluid.amount <= 0) break
 
                 val otherTank = BlockUtils.getTileInDirection(world, coord, side)
-                if (otherTank != null) drainedFluid!!.amount -= tryFillNeighbour(drainedFluid, side, otherTank)
+                if (otherTank != null) drainedFluid.amount -= tryFillNeighbour(drainedFluid, otherTank)
             }
 
             // return any remainder
-            val distributed = startingAmount - drainedFluid!!.amount
+            val distributed = startingAmount - drainedFluid.amount
             if (distributed > 0) drain(distributed, true)
         }
     }
@@ -125,11 +126,11 @@ open class GenericTank : FluidTank {
     }
 
     fun fillFromSide(maxDrain: Int, world: World, coord: BlockPos, side: EnumFacing): Int {
-        var maxDrain = maxDrain
-        maxDrain = Math.max(maxDrain, space)
-        if (maxDrain <= 0) return 0
+        var maxDrain1 = maxDrain
+        maxDrain1 = Math.max(maxDrain1, space)
+        if (maxDrain1 <= 0) return 0
 
-        return fillInternal(world, coord, side, maxDrain)
+        return fillInternal(world, coord, side, maxDrain1)
     }
 
     private fun fillInternal(world: World, coord: BlockPos, side: EnumFacing, maxDrain0: Int): Int {
@@ -138,7 +139,6 @@ open class GenericTank : FluidTank {
         val otherTank = BlockUtils.getTileInDirection(world, coord, side)
 
         if (otherTank is IFluidHandler) {
-            val drainSide = side.getOpposite()
             val handler = otherTank as IFluidHandler
             val infos = handler.tankProperties ?: return 0
 
@@ -158,6 +158,9 @@ open class GenericTank : FluidTank {
 
         return drain
     }
+
+    override fun isEmpty(): Boolean = fluid == null || fluid!!.fluid == null || fluid!!.amount == 0
+    override fun isFull(): Boolean = fluid != null && fluid!!.fluid != null && fluid!!.amount >= capacity
 
     companion object {
 
@@ -192,9 +195,8 @@ open class GenericTank : FluidTank {
             return result
         }
 
-        private fun tryFillNeighbour(drainedFluid: FluidStack, side: EnumFacing, otherTank: TileEntity): Int {
+        private fun tryFillNeighbour(drainedFluid: FluidStack, otherTank: TileEntity): Int {
             val toFill = drainedFluid.copy()
-            val fillSide = side.opposite
 
             if (otherTank is IFluidHandler) return otherTank.fill(toFill, true)
             return 0

@@ -7,9 +7,10 @@ import java.io.File
 import kotlin.reflect.KClass
 
 
-open class FeatureHelper(modId: String, val mainClass: KClass<*>) {
+open class FeatureHelper(modId: String, mainClass: KClass<*>) {
     val blockHolders = hashSetOf<Class<out BlockInstances>>()
     val itemHolders = hashSetOf<Class<out ItemInstances>>()
+    val fluidHolders = hashSetOf<Class<out FluidInstances>>()
     val configProvider : ConfigProvider = ConfigProvider(modId, mainClass)
 
     fun registerBlocksHolder(holder: Class<out BlockInstances>) {
@@ -20,13 +21,19 @@ open class FeatureHelper(modId: String, val mainClass: KClass<*>) {
         itemHolders.add(holder)
     }
 
+    fun registerFluidsHolder(holder: Class<out FluidInstances>) {
+        fluidHolders.add(holder)
+    }
+
     fun preInit(configFile: File) { preInit(Configuration(configFile)) }
     fun preInit(config: Configuration) {
         val features = FeatureManager()
-        for (holder in blockHolders)
+        for(holder in blockHolders)
             features.collectBlocks(holder)
         for(holder in itemHolders)
             features.collectItems(holder)
+        for(holder in fluidHolders)
+            features.collectFluids(holder)
 
         registerCustomFeatures(features)
 
@@ -40,10 +47,12 @@ open class FeatureHelper(modId: String, val mainClass: KClass<*>) {
         setupIds(configProvider)
         setupBlockFactory(configProvider.blockFactory)
         setupItemFactory(configProvider.itemFactory)
-        for (holder in blockHolders)
+        for(holder in blockHolders)
             configProvider.registerBlocks(holder)
         for(holder in itemHolders)
             configProvider.registerItems(holder)
+        for(holder in fluidHolders)
+            configProvider.registerFluids(holder)
         setupProvider(configProvider)
     }
 

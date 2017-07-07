@@ -6,21 +6,23 @@ import net.minecraft.inventory.Container
 import net.minecraft.inventory.IInventory
 import net.minecraft.inventory.Slot
 import net.minecraft.item.ItemStack
+import net.minecraftforge.items.IItemHandler
+import net.minecraftforge.items.SlotItemHandler
 import org.generousg.fruitylib.util.InventoryUtils
 import org.generousg.fruitylib.util.events.ButtonClickedEvent
 import org.generousg.fruitylib.util.events.Event
 
 
-abstract class ContainerBase<out T>(val playerInventory: IInventory, ownerInventory: IInventory, val owner: T) : Container() {
+abstract class ContainerBase<out T>(val playerInventory: IInventory, ownerInventory: IItemHandler, val owner: T) : Container() {
     val inventory = ownerInventory
-    val inventorySize = inventory.sizeInventory
+    val inventorySize = inventory.slots
     val players: Set<EntityPlayer> get() {
         return playerList
     }
 
     val buttonClickedEvent = Event<ButtonClickedEvent>()
 
-    protected class RestrictedSlot(inventory: IInventory, slot: Int, x: Int, y: Int) : Slot(inventory, slot, x, y) {
+    protected class RestrictedSlot(itemHandler: IItemHandler, slot: Int, x: Int, y: Int) : SlotItemHandler(itemHandler, slot, x, y) {
         private val inventoryIndex = slot
         override fun isItemValid(stack: ItemStack): Boolean = inventory.isItemValidForSlot(inventoryIndex, stack)
     }
@@ -54,7 +56,7 @@ abstract class ContainerBase<out T>(val playerInventory: IInventory, ownerInvent
             addSlotToContainer(Slot(playerInventory, slot, offsetX + slot * 18, offsetY + 58))
     }
 
-    override fun canInteractWith(playerIn: EntityPlayer): Boolean = inventory.isUsableByPlayer(playerIn)
+    override fun canInteractWith(playerIn: EntityPlayer): Boolean = true
 
     protected fun mergeItemStackSafe(stackToMerge: ItemStack, start: Int, stop: Int, reverse: Boolean): Boolean {
         var inventoryChanged = false

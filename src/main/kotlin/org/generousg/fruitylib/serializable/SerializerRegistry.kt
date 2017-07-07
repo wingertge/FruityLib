@@ -15,6 +15,7 @@ import java.io.IOException
 import java.lang.reflect.Type
 
 
+@Suppress("UNUSED_PARAMETER", "unused")
 open class SerializerRegistry {
     object InstanceHolder {
         val INSTANCE = SerializerRegistry()
@@ -83,7 +84,7 @@ open class SerializerRegistry {
     }
 
     private fun findClassSerializer(cls: Class<*>, serializer: IStreamSerializer<*>?): IStreamSerializer<*>? {
-        var serial = serializer
+        var serial: IStreamSerializer<*>?
         for (provider in providers) {
             serial = provider.getSerializer(cls)
             if (serial != null) {

@@ -30,6 +30,7 @@ class NetworkEventRegistry : IDataVisitor<String, Int> {
         clsToId.clear()
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun entry(key: String, value: Int) {
         val candidateCls: Class<*>
         try {

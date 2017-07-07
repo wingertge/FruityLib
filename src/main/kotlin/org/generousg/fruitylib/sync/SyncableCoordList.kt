@@ -1,7 +1,10 @@
 package org.generousg.fruitylib.sync
 
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.nbt.NBTTagList
+import net.minecraft.nbt.NBTUtil
 import net.minecraft.util.math.BlockPos
+import org.generousg.fruitylib.util.ByteUtils
 import java.io.DataInputStream
 import java.io.DataOutputStream
 
@@ -36,18 +39,37 @@ class SyncableCoordList : SyncableObjectBase(), ISyncableValueProvider<List<Bloc
     override fun iterator() = value.iterator()
 
     override fun readFromStream(stream: DataInputStream) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val size = ByteUtils.readVLI(stream)
+        val result = mutableListOf<BlockPos>()
+        for(i in 0..size-1) {
+            val x = stream.readInt()
+            val y = stream.readInt()
+            val z = stream.readInt()
+            val pos = BlockPos(x, y, z)
+            result.add(pos)
+        }
+        value = result
     }
 
     override fun writeToStream(stream: DataOutputStream) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        ByteUtils.writeVLI(stream, value.size)
+        for(pos in value) {
+            stream.writeInt(pos.x)
+            stream.writeInt(pos.y)
+            stream.writeInt(pos.z)
+        }
     }
 
     override fun writeToNBT(nbt: NBTTagCompound, name: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val tag = NBTTagList()
+        for(pos in value) tag.appendTag(NBTUtil.createPosTag(pos))
+        nbt.setTag(name, tag)
     }
 
     override fun readFromNBT(nbt: NBTTagCompound, name: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val result = mutableListOf<BlockPos>()
+        val listTag = nbt.getTagList(name, 10)
+        (0..listTag.tagCount() - 1).map { listTag.getCompoundTagAt(it) }.mapTo(result) { NBTUtil.getPosFromTag(it) }
+        value = result
     }
 }

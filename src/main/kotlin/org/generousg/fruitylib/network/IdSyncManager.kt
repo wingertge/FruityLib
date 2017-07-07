@@ -40,9 +40,9 @@ class IdSyncManager private constructor() : DataStoreManager() {
             val closer = Closer.create()
 
             try {
-                closer.use { closer ->
-                    val raw = closer.register(ByteBufOutputStream(payload))
-                    val compressed = closer.register(GZIPOutputStream(raw))
+                closer.use { closer1 ->
+                    val raw = closer1.register(ByteBufOutputStream(payload))
+                    val compressed = closer1.register(GZIPOutputStream(raw))
                     val output = DataOutputStream(compressed)
                     output.writeUTF(key.id)
                     writer.write(output)
@@ -100,9 +100,9 @@ class IdSyncManager private constructor() : DataStoreManager() {
     @Throws(IOException::class)
     private fun decodeIds(buf: ByteBuf) {
         val closer = Closer.create()
-        closer.use { closer ->
-            val raw = closer.register(ByteBufInputStream(buf))
-            val compressed = closer.register(GZIPInputStream(raw))
+        closer.use { closer1 ->
+            val raw = closer1.register(ByteBufInputStream(buf))
+            val compressed = closer1.register(GZIPInputStream(raw))
             val input = DataInputStream(compressed)
 
             val keyId = input.readUTF()
@@ -115,6 +115,7 @@ class IdSyncManager private constructor() : DataStoreManager() {
     }
 
     @SubscribeEvent
+    @Suppress("UNUSED_PARAMETER")
     fun onDisconnect(event: FMLNetworkEvent.ClientDisconnectionFromServerEvent) {
         Log.debug("Disconnected, restoring local data")
         activateLocalData()

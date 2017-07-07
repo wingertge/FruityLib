@@ -14,6 +14,7 @@ import java.io.DataOutput
 
 abstract class NullableCollectionSerializer<T>(private val componentType: TypeToken<*>) : IStreamSerializer<T> {
     companion object {
+        @Suppress("NAME_SHADOWING")
         fun createObjectArraySerializer(componentType: TypeToken<*>): NullableCollectionSerializer<Array<Any?>> {
             return object: NullableCollectionSerializer<Array<Any?>>(componentType) {
                 override fun createCollection(componentType: TypeToken<*>, length: Int) = arrayOfNulls<Any?>(length)

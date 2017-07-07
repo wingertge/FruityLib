@@ -4,8 +4,11 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
+import net.minecraftforge.common.capabilities.Capability
+import net.minecraftforge.common.capabilities.CapabilityInject
 import org.generousg.fruitylib.blocks.FruityBlock
 import org.generousg.fruitylib.inventory.InventorySerializable
+import org.generousg.fruitylib.liquids.IExtendedFluidHandler
 import org.generousg.fruitylib.network.DimCoord
 import org.generousg.fruitylib.network.rpc.IRpcTarget
 import org.generousg.fruitylib.network.rpc.IRpcTargetProvider
@@ -16,6 +19,11 @@ import org.generousg.fruitylib.reflect.TypeUtils
 
 
 abstract class FruityTileEntity : TileEntity(), IRpcTargetProvider {
+    companion object {
+        @CapabilityInject(IExtendedFluidHandler::class)
+        lateinit var FLUID_HANDLER_CAPABILITY: Capability<IExtendedFluidHandler>
+    }
+
     private val isUsedForClientInventoryRendering = false
 
     val dimCoords get() = DimCoord(world.provider.dimension, getPos().x, getPos().y, getPos().z)

@@ -27,7 +27,7 @@ abstract class Dispatcher {
             nowhere.sendMessage(msg)
 
             val result = ImmutableList.builder<Any?>()
-            var packet: Any? = null
+            var packet: Any?
             while (serverChannel.outboundMessages().peek() != null) {
                 packet = serverChannel.outboundMessages().poll()
                 result.add(packet)

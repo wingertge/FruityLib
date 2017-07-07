@@ -34,6 +34,7 @@ class WailaIntegration private constructor(): IWailaDataProvider {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    @Suppress("DEPRECATION")
     override fun getWailaHead(itemStack: ItemStack, currenttip: MutableList<String>, accessor: IWailaDataAccessor, config: IWailaConfigHandler): MutableList<String> {
         val block = accessor.block
         if(block is FruityBlock && block.hasInfo) block.addInformation(accessor.stack, accessor.player, currenttip, false)
