@@ -39,16 +39,16 @@ open class ProxyTank : IExtendedFluidHandler {
 
     protected val maxAmount: Int get() = members.map { it.tankProperties.first().capacity }.sum()
     private val members = mutableListOf<IExtendedFluidHandler>()
-    private val filter: (FluidStack) -> Boolean
+    private val canAccept: (FluidStack) -> Boolean
     constructor() {
-        this.filter = NO_RESTRICTIONS
+        this.canAccept = NO_RESTRICTIONS
     }
     constructor(vararg acceptableFluids: FluidStack) {
-        this.filter = Companion.filter(*acceptableFluids)
+        this.canAccept = Companion.filter(*acceptableFluids)
     }
 
     constructor(vararg acceptableFluids: Fluid) {
-        this.filter = Companion.filter(*CollectionUtils.transform(acceptableFluids.asList(), FLUID_CONVERTER))
+        this.canAccept = Companion.filter(*CollectionUtils.transform(acceptableFluids.asList(), FLUID_CONVERTER))
     }
 
     override fun drain(resource: FluidStack?, doDrain: Boolean): FluidStack? {
@@ -104,7 +104,7 @@ open class ProxyTank : IExtendedFluidHandler {
     }
 
     override fun fill(resource: FluidStack?, doFill: Boolean): Int {
-        if(resource == null || !filter.invoke(resource)) return 0
+        if(resource == null || !canAccept(resource)) return 0
         members.sortBy { it.tankProperties.first().contents?.amount ?: 0 }
         var remaining = resource.amount
         for (it in members.asSequence()) {
@@ -117,7 +117,7 @@ open class ProxyTank : IExtendedFluidHandler {
     }
 
     override fun fillInternal(resource: FluidStack?, doFill: Boolean): Int {
-        if(resource == null || !filter.invoke(resource)) return 0
+        if(resource == null || !canAccept(resource)) return 0
         members.sortBy { it.tankProperties.first().contents?.amount ?: 0 }
         var remaining = resource.amount
         for (it in members.asSequence()) {

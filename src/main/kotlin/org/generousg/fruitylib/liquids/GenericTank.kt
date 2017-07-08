@@ -20,22 +20,18 @@ import java.util.*
 
 open class GenericTank : FluidTank, IExtendedFluidHandler {
     private var surroundingTanks: List<EnumFacing> = Lists.newArrayList()
-    private val filter: IFluidFilter
-
-    interface IFluidFilter {
-        fun canAcceptFluid(stack: FluidStack): Boolean
-    }
+    private val canAccept: (FluidStack) -> Boolean
 
     constructor(capacity: Int) : super(capacity) {
-        this.filter = NO_RESTRICTIONS
+        this.canAccept = NO_RESTRICTIONS
     }
 
     constructor(capacity: Int, vararg acceptableFluids: FluidStack) : super(capacity) {
-        this.filter = filter(*acceptableFluids)
+        this.canAccept = filter(*acceptableFluids)
     }
 
     constructor(capacity: Int, vararg acceptableFluids: Fluid) : super(capacity) {
-        this.filter = Companion.filter(*CollectionUtils.transform(acceptableFluids.asList(), FLUID_CONVERTER))
+        this.canAccept = Companion.filter(*CollectionUtils.transform(acceptableFluids.asList(), FLUID_CONVERTER))
     }
 
     override fun drain(resource: FluidStack?, doDrain: Boolean): FluidStack? {
@@ -51,7 +47,7 @@ open class GenericTank : FluidTank, IExtendedFluidHandler {
         get() = getCapacity() - fluidAmount
 
     override fun fill(resource: FluidStack?, doFill: Boolean): Int {
-        if (resource == null || !filter.canAcceptFluid(resource)) return 0
+        if (resource == null || !canAccept(resource)) return 0
         return super.fill(resource, doFill)
     }
 
@@ -147,7 +143,7 @@ open class GenericTank : FluidTank, IExtendedFluidHandler {
             val infos = handler.tankProperties ?: return 0
 
             for (info in infos) {
-                if (filter.canAcceptFluid(info.contents!!)) {
+                if (canAccept(info.contents!!)) {
                     val drained = handler.drain(maxDrain, true)
 
                     if (drained != null) {
@@ -168,22 +164,13 @@ open class GenericTank : FluidTank, IExtendedFluidHandler {
 
     companion object {
 
-        private val NO_RESTRICTIONS = object : IFluidFilter {
-            override fun canAcceptFluid(stack: FluidStack): Boolean {
-                return true
-            }
-        }
+        private val NO_RESTRICTIONS: (FluidStack) -> Boolean = { true }
         private val FLUID_CONVERTER = Function<Fluid, FluidStack> { input -> FluidStack(input, 0) }
 
-        private fun filter(vararg acceptableFluids: FluidStack): IFluidFilter {
+        private fun filter(vararg acceptableFluids: FluidStack): (FluidStack) -> Boolean {
             if (acceptableFluids.isEmpty()) return NO_RESTRICTIONS
 
-            return object : IFluidFilter {
-                override fun canAcceptFluid(stack: FluidStack): Boolean {
-
-                    return acceptableFluids.any { it.isFluidEqual(stack) }
-                }
-            }
+            return { stack -> acceptableFluids.any { it.isFluidEqual(stack) }}
         }
 
         private fun isNeighbourTank(world: World, coord: BlockPos, dir: EnumFacing): Boolean {

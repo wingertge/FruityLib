@@ -9,6 +9,6 @@ open class Event<T> : ArrayList<(T)->Unit>() {
     fun subscribe(listener: (T)->Unit) { add(listener) }
     fun unsubscribe(listener: (T)->Unit) { remove(listener) }
     fun fire(event: T) {
-        this.forEach { it.invoke(event) }
+        this.forEach { it(event) }
     }
 }
