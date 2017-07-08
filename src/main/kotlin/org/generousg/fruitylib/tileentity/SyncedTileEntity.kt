@@ -23,7 +23,7 @@ abstract class SyncedTileEntity : FruityTileEntity(), ISyncMapProvider {
         createSyncedFields()
         SyncObjectScanner.instance.registerAllFields(syncMap, this)
 
-        syncMap.sentSyncEvent += { markUpdated() }
+        syncMap.outboundSyncEvent += { markUpdated() }
     }
 
     protected val dropSerializer: DropTagSerializer

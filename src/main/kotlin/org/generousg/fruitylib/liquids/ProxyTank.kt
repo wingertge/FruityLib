@@ -3,20 +3,24 @@ package org.generousg.fruitylib.liquids
 import com.google.common.base.Function
 import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.FluidStack
+import net.minecraftforge.fluids.capability.FluidTankProperties
 import net.minecraftforge.fluids.capability.IFluidTankProperties
 import org.generousg.fruitylib.util.CollectionUtils
 import org.generousg.fruitylib.util.events.Event
 import org.generousg.fruitylib.util.events.ValueChangedEvent
 
 
-class ProxyTank : IExtendedFluidHandler {
-    override fun isEmpty(): Boolean = members.all { it.isEmpty() }
-    override fun isFull(): Boolean = members.all { isFull() }
+open class ProxyTank : IExtendedFluidHandler {
+    protected var canFill = true
 
+    protected var canDrain = true
+
+    override fun isEmpty(): Boolean = members.all { it.isEmpty() }
+    override fun isFull(): Boolean = members.all { it.isFull() }
     companion object {
         private val FLUID_CONVERTER = Function<Fluid, FluidStack> { input -> FluidStack(input, 0) }
-        private val NO_RESTRICTIONS: (FluidStack) -> Boolean = { true }
 
+        private val NO_RESTRICTIONS: (FluidStack) -> Boolean = { true }
         private fun filter(vararg acceptableFluids: FluidStack): (FluidStack) -> Boolean {
             if (acceptableFluids.isEmpty()) return NO_RESTRICTIONS
             return { stack -> acceptableFluids.any { it.isFluidEqual(stack) }}
@@ -24,23 +28,21 @@ class ProxyTank : IExtendedFluidHandler {
     }
 
     private var _contents: FluidStack? = null //cached contents
-    override val contents: FluidStack? get() {
+    protected val contents: FluidStack? get() {
         if(members.isEmpty()) return null
         if(_contents == null) {
-            val type = members.map { it.contents }.firstOrNull()?.fluid ?: return null
-            _contents = FluidStack(type, members.map { it.contents?.amount ?: 0 }.sum())
+            val type = members.map { it.tankProperties.first().contents }.firstOrNull()?.fluid ?: return null
+            _contents = FluidStack(type, members.map { it.tankProperties.first().contents?.amount ?: 0 }.sum())
         }
         return _contents
     }
-    override val maxAmount: Int
-        get() = members.map { it.maxAmount }.sum()
+
+    protected val maxAmount: Int get() = members.map { it.tankProperties.first().capacity }.sum()
     private val members = mutableListOf<IExtendedFluidHandler>()
     private val filter: (FluidStack) -> Boolean
-
     constructor() {
         this.filter = NO_RESTRICTIONS
     }
-
     constructor(vararg acceptableFluids: FluidStack) {
         this.filter = Companion.filter(*acceptableFluids)
     }
@@ -50,8 +52,7 @@ class ProxyTank : IExtendedFluidHandler {
     }
 
     override fun drain(resource: FluidStack?, doDrain: Boolean): FluidStack? {
-        val prevAmount = contents?.copy()
-        members.sortByDescending { it.contents?.amount ?: 0 }
+        members.sortByDescending { it.tankProperties.first().contents?.amount ?: 0 }
         if(resource == null || resource.fluid == null || contents == null || contents!!.isFluidEqual(resource)) return null
         var remaining = resource.amount
         members.asSequence().forEach {
@@ -59,14 +60,12 @@ class ProxyTank : IExtendedFluidHandler {
             remaining -= it.drain(resource, doDrain)?.amount ?: 0
         }
 
-        if(doDrain) _contents = null //contents changed, clear cache
-        if(doDrain && prevAmount?.amount != contents?.amount) fluidChangedEvent.fire(ValueChangedEvent(contents, prevAmount))
+        invalidateCache()
         return FluidStack(resource.fluid, resource.amount - remaining)
     }
 
     override fun drain(maxDrain: Int, doDrain: Boolean): FluidStack? {
-        val prevAmount = contents?.copy()
-        members.sortByDescending { it.contents?.amount ?: 0 }
+        members.sortByDescending { it.tankProperties.first().contents?.amount ?: 0 }
         if(contents == null || contents!!.fluid == null) return null
         var remaining = maxDrain
         members.asSequence().forEach {
@@ -74,28 +73,64 @@ class ProxyTank : IExtendedFluidHandler {
             remaining -= it.drain(maxDrain, doDrain)?.amount ?: 0
         }
 
-        if(doDrain) _contents = null //contents changed, clear cache
-        if(doDrain && prevAmount?.amount != contents?.amount) fluidChangedEvent.fire(ValueChangedEvent(contents, prevAmount))
+        invalidateCache()
+        return FluidStack(contents!!.fluid, maxDrain - remaining)
+    }
+
+    override fun drainInternal(resource: FluidStack?, doDrain: Boolean): FluidStack? {
+        members.sortByDescending { it.tankProperties.first().contents?.amount ?: 0 }
+        if(resource == null || resource.fluid == null || contents == null || contents!!.isFluidEqual(resource)) return null
+        var remaining = resource.amount
+        members.asSequence().forEach {
+            if(remaining <= 0) return@forEach
+            remaining -= it.drainInternal(resource, doDrain)?.amount ?: 0
+        }
+
+        invalidateCache()
+        return FluidStack(resource.fluid, resource.amount - remaining)
+    }
+
+    override fun drainInternal(maxDrain: Int, doDrain: Boolean): FluidStack? {
+        members.sortByDescending { it.tankProperties.first().contents?.amount ?: 0 }
+        if(contents == null || contents!!.fluid == null) return null
+        var remaining = maxDrain
+        members.asSequence().forEach {
+            if(remaining <= 0) return@forEach
+            remaining -= it.drainInternal(maxDrain, doDrain)?.amount ?: 0
+        }
+
+        invalidateCache()
         return FluidStack(contents!!.fluid, maxDrain - remaining)
     }
 
     override fun fill(resource: FluidStack?, doFill: Boolean): Int {
-        val prevAmount = contents?.copy()
         if(resource == null || !filter.invoke(resource)) return 0
-        members.sortBy { it.contents?.amount ?: 0 }
+        members.sortBy { it.tankProperties.first().contents?.amount ?: 0 }
         var remaining = resource.amount
-        members.asSequence().forEach {
-            if(remaining <= 0) return@forEach
+        for (it in members.asSequence()) {
+            if(remaining <= 0) break
             remaining -= it.fill(resource, doFill)
         }
 
-        if(doFill) _contents = null //contents changed, clear cache
-        if(doFill && prevAmount?.amount != contents?.amount) fluidChangedEvent.fire(ValueChangedEvent(contents, prevAmount))
+        invalidateCache()
+        return resource.amount - remaining
+    }
+
+    override fun fillInternal(resource: FluidStack?, doFill: Boolean): Int {
+        if(resource == null || !filter.invoke(resource)) return 0
+        members.sortBy { it.tankProperties.first().contents?.amount ?: 0 }
+        var remaining = resource.amount
+        for (it in members.asSequence()) {
+            if(remaining <= 0) break
+            remaining -= it.fillInternal(resource, doFill)
+        }
+
+        invalidateCache()
         return resource.amount - remaining
     }
 
     override fun getTankProperties(): Array<IFluidTankProperties> {
-        return if(!members.isEmpty()) members[0].tankProperties else arrayOf()
+        return arrayOf(FluidTankProperties(contents, maxAmount, canFill, canDrain))
     }
 
     fun setMembers(tanks: Iterable<IExtendedFluidHandler>) {
@@ -104,8 +139,14 @@ class ProxyTank : IExtendedFluidHandler {
         members.clear()
         members.addAll(tanks)
 
-        _contents = null //tanks changed, clear cache
+        invalidateCache()
         capacityChangedEvent.fire(ValueChangedEvent(maxAmount, oldCapacity))
+    }
+
+    fun invalidateCache() {
+        val oldContents = contents?.copy()
+        _contents = null
+        fluidChangedEvent.fire(ValueChangedEvent(contents, oldContents))
     }
 
     val fluidChangedEvent = Event<ValueChangedEvent<FluidStack?>>()

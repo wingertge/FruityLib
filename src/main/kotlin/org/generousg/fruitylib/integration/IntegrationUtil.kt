@@ -11,4 +11,13 @@ object IntegrationUtil {
     }
 
     fun modLoaded(modName: String): Boolean = Loader.isModLoaded(modName)
+
+    fun createSimpleModule(name: String, load: ()->Unit): IIntegrationModule {
+        return object: IIntegrationModule {
+            override val canLoad: Boolean = true
+            override val name: String = name
+
+            override fun load() = load()
+        }
+    }
 }

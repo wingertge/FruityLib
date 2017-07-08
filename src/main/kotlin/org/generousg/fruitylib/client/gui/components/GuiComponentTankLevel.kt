@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.client.resources.I18n
+import net.minecraft.util.text.TextFormatting
 import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.fluids.FluidStack
 import org.generousg.fruitylib.client.gui.TextureUtils
@@ -75,7 +76,9 @@ class GuiComponentTankLevel(x: Int, y: Int, width: Int, height: Int, var capacit
             var fluid = fluidStack?.fluid
             if(fluid == null && fluidName != "") fluid = FluidRegistry.getFluid(fluidName)
             if(fluid == null) drawHoveringText("Empty", mouseX, mouseY, mc.fontRendererObj)
-            else drawHoveringText(arrayListOf(I18n.format(fluid.unlocalizedName), "${fluidStack?.amount ?: 0}mB / ${capacity}mB"), offsetX + mouseX, offsetY + mouseY, mc.fontRendererObj)
+            else drawHoveringText(arrayListOf(I18n.format(fluid.getLocalizedName(fluidStack)),
+                    "${TextFormatting.GRAY}${fluidStack?.amount ?: 0}mB / ${capacity}mB"),
+                    offsetX + mouseX, offsetY + mouseY, mc.fontRendererObj)
         }
     }
 

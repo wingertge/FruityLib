@@ -1,6 +1,8 @@
 package org.generousg.fruitylib.sync
 
 import com.google.common.io.ByteStreams
+import com.sun.org.apache.xerces.internal.impl.io.UTF8Reader
+import com.sun.xml.internal.stream.writers.UTF8OutputStreamWriter
 import net.minecraft.nbt.CompressedStreamTools
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.common.util.Constants
@@ -15,7 +17,7 @@ import java.io.DataOutputStream
 import java.io.IOException
 
 
-class SyncableTank : GenericTank, ISyncableObject, ISyncableValueProvider<FluidStack?> {
+open class SyncableTank : GenericTank, ISyncableObject, ISyncableValueProvider<FluidStack?> {
 
     private var dirty = false
 
@@ -40,8 +42,12 @@ class SyncableTank : GenericTank, ISyncableObject, ISyncableValueProvider<FluidS
     @Throws(IOException::class)
     override fun readFromStream(stream: DataInputStream) {
         if (stream.readBoolean()) {
+            val reader = UTF8Reader(stream)
             val fluidIdLength = ByteUtils.readVLI(stream)
-            val fluidId = ByteUtils.readString(stream, fluidIdLength)
+            val result = CharArray(fluidIdLength)
+            val charsRead = reader.read(result)
+            require(charsRead == fluidIdLength) { "Error reading fluid id. Chars read lower than string length." }
+            val fluidId = String(result)
             val fluid = FluidRegistry.getFluid(fluidId)
 
             val fluidAmount = stream.readInt()
@@ -62,8 +68,10 @@ class SyncableTank : GenericTank, ISyncableObject, ISyncableValueProvider<FluidS
     override fun writeToStream(stream: DataOutputStream) {
         if (fluid != null) {
             stream.writeBoolean(true)
-            ByteUtils.writeVLI(stream, fluid!!.unlocalizedName.length)
-            stream.write(fluid!!.unlocalizedName.toByteArray())
+            val fluidName = FluidRegistry.getFluidName(fluid)
+            val writer = UTF8OutputStreamWriter(stream)
+            ByteUtils.writeVLI(stream, fluidName.length)
+            writer.write(fluidName)
             stream.writeInt(fluid!!.amount)
             if (fluid!!.tag != null) {
                 val buffer = ByteArrayOutputStream()
@@ -111,6 +119,24 @@ class SyncableTank : GenericTank, ISyncableObject, ISyncableValueProvider<FluidS
 
     override fun drain(maxDrain: Int, doDrain: Boolean): FluidStack? {
         val drained = super.drain(maxDrain, doDrain)
+        if (doDrain && drained != null) markDirty()
+        return drained
+    }
+
+    override fun fillInternal(resource: FluidStack?, doFill: Boolean): Int {
+        val filled = super.fillInternal(resource, doFill)
+        if (doFill && filled > 0) markDirty()
+        return filled
+    }
+
+    override fun drainInternal(resource: FluidStack?, doDrain: Boolean): FluidStack? {
+        val drained = super.drainInternal(resource, doDrain)
+        if (doDrain && drained != null) markDirty()
+        return drained
+    }
+
+    override fun drainInternal(maxDrain: Int, doDrain: Boolean): FluidStack? {
+        val drained = super.drainInternal(maxDrain, doDrain)
         if (doDrain && drained != null) markDirty()
         return drained
     }

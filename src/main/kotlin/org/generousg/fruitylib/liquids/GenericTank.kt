@@ -10,15 +10,15 @@ import net.minecraft.world.World
 import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.FluidStack
 import net.minecraftforge.fluids.FluidTank
+import net.minecraftforge.fluids.capability.FluidTankProperties
 import net.minecraftforge.fluids.capability.IFluidHandler
+import net.minecraftforge.fluids.capability.IFluidTankProperties
 import org.generousg.fruitylib.util.BlockUtils
 import org.generousg.fruitylib.util.CollectionUtils
 import java.util.*
 
 
 open class GenericTank : FluidTank, IExtendedFluidHandler {
-    override val contents: FluidStack? get() = fluid
-    override val maxAmount: Int get() = super.capacity
     private var surroundingTanks: List<EnumFacing> = Lists.newArrayList()
     private val filter: IFluidFilter
 
@@ -116,6 +116,10 @@ open class GenericTank : FluidTank, IExtendedFluidHandler {
             if (toDrain <= 0) break
             toDrain -= fillInternal(world, coord, side, toDrain)
         }
+    }
+
+    override fun getTankProperties(): Array<IFluidTankProperties> {
+        return arrayOf(FluidTankProperties(fluid, capacity, canFill, canDrain))
     }
 
     fun fillFromSide(world: World, coord: BlockPos, side: EnumFacing): Int {

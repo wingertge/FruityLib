@@ -11,7 +11,7 @@ class SyncMapEntity<out H>(handler: H) : SyncMap<H>(handler) where H : Entity, H
 
     override val handlerType: SyncMap.HandlerType = HandlerType.ENTITY
 
-    override val playersWatching: Set<EntityPlayerMP> by lazy { NetUtils.getPlayersWatchingEntity(handler.world as WorldServer, handler.entityId) }
+    override val playersWatching: Set<EntityPlayerMP> get() = NetUtils.getPlayersWatchingEntity(handler.world as WorldServer, handler.entityId)
 
     override val world: World = handler.world
 

@@ -114,8 +114,8 @@ abstract class SyncMap<out H : ISyncMapProvider>(protected val handler: H) {
     private val nameMap = hashMapOf<String, ISyncableObject>()
     private val objectToId = Maps.newIdentityHashMap<ISyncableObject, Int>()
 
-    val sentSyncEvent = Event<SyncEvent>()
-    val receivedSyncEvent = Event<SyncEvent>()
+    val outboundSyncEvent = Event<SyncEvent>()
+    val inboundSyncEvent = Event<SyncEvent>()
     val clientInitEvent = Event<SyncEvent>()
 
     private var index = 0
@@ -168,7 +168,7 @@ abstract class SyncMap<out H : ISyncMapProvider>(protected val handler: H) {
             mask = (mask.toInt() shr 1).toShort()
         }
 
-        if(!changes.isEmpty()) receivedSyncEvent.fire(SyncEvent(Collections.unmodifiableSet(changes)))
+        if(!changes.isEmpty()) inboundSyncEvent.fire(SyncEvent(Collections.unmodifiableSet(changes)))
     }
 
     @Throws(IOException::class) fun writeToStream(dataOutputStream: DataOutputStream, fullPacket: Boolean) {
@@ -237,7 +237,7 @@ abstract class SyncMap<out H : ISyncMapProvider>(protected val handler: H) {
         }
 
         if(hasChanges) markClean(changes)
-        sentSyncEvent.fire(SyncEvent(Collections.unmodifiableSet(changes)))
+        outboundSyncEvent.fire(SyncEvent(Collections.unmodifiableSet(changes)))
     }
 
     @Suppress("UNCHECKED_CAST")

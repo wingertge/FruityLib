@@ -7,8 +7,6 @@ import net.minecraft.block.state.IBlockState
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
-import net.minecraftforge.fml.common.FMLCommonHandler
-import net.minecraftforge.fml.relauncher.Side
 import org.generousg.fruitylib.multiblock.MultiblockPart
 import org.generousg.fruitylib.multiblock.TileEntityMultiblockPart
 import kotlin.reflect.KClass
@@ -27,12 +25,12 @@ abstract class BlockMultiblockPart(material: Material) : FruityBlock(material) {
                 te.startRebuild(it.pos)
             }
         }
-        neighborChangedEvent += {
+        /*neighborChangedEvent += {
             if(FMLCommonHandler.instance().effectiveSide == Side.SERVER) {
                 val te = it.world.getTileEntity(it.pos) as TileEntityMultiblockPart
                 te.startRebuild(it.pos)
             }
-        }
+        }*/
         breakEvent += {
             if(!it.world.isRemote) {
                 val te = it.world.getTileEntity(it.pos) as TileEntityMultiblockPart

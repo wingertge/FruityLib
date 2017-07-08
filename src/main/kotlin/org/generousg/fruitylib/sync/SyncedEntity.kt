@@ -11,20 +11,20 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.capabilities.CapabilityInject
 import net.minecraftforge.event.entity.player.PlayerEvent
+import net.minecraftforge.fluids.capability.IFluidHandler
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData
-import org.generousg.fruitylib.inventory.IExtendedItemHandler
-import org.generousg.fruitylib.liquids.IExtendedFluidHandler
+import net.minecraftforge.items.IItemHandler
 import java.io.DataInputStream
 import java.io.DataOutputStream
 
 
 abstract class SyncedEntity(world: World) : Entity(world), ISyncMapProvider, IEntityAdditionalSpawnData {
     companion object {
-        @CapabilityInject(IExtendedFluidHandler::class)
-        lateinit var FLUID_HANDLER_CAPABILITY: Capability<IExtendedFluidHandler>
-        @CapabilityInject(IExtendedItemHandler::class)
-        lateinit var ITEM_HANDLER_CAPABILITY: Capability<IExtendedItemHandler>
+        @CapabilityInject(IFluidHandler::class)
+        lateinit var FLUID_HANDLER_CAPABILITY: Capability<IFluidHandler>
+        @CapabilityInject(IItemHandler::class)
+        lateinit var ITEM_HANDLER_CAPABILITY: Capability<IItemHandler>
     }
 
     override val syncMap: SyncMapEntity<SyncedEntity> = SyncMapEntity(this)

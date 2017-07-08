@@ -5,11 +5,13 @@ import net.minecraftforge.common.capabilities.CapabilityManager
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.SidedProxy
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
+import net.minecraftforge.fml.common.event.FMLInterModComms
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 import org.generousg.fruitylib.config.ConfigStorage
 import org.generousg.fruitylib.flowcontrol.EventQueue
 import org.generousg.fruitylib.integration.Integration
+import org.generousg.fruitylib.integration.IntegrationUtil
 import org.generousg.fruitylib.inventory.IExtendedItemHandler
 import org.generousg.fruitylib.liquids.IExtendedFluidHandler
 import org.generousg.fruitylib.network.IdSyncManager
@@ -53,6 +55,10 @@ class FruityLib {
         MinecraftForge.EVENT_BUS.register(ConfigStorage.instance)
         proxy?.preInit(event)
         eventQueue.preInit(event)
+
+        Integration.addModule(IntegrationUtil.createSimpleModule("fl_waila", {
+            FMLInterModComms.sendMessage("waila", "register", "org.generousg.fruitylib.integration.WailaRegistration.registerCallbacks")
+        }))
     }
 
     @Mod.EventHandler

@@ -15,11 +15,11 @@ interface IExtendedFluidHandler : IFluidHandler {
         lateinit var PARENT_CAPABILITY: Capability<IFluidHandler>
     }
 
-    val contents: FluidStack?
-    val maxAmount: Int
-
     fun isEmpty(): Boolean
     fun isFull(): Boolean
+    fun drainInternal(resource: FluidStack?, doDrain: Boolean): FluidStack?
+    fun drainInternal(maxDrain: Int, doDrain: Boolean): FluidStack?
+    fun fillInternal(resource: FluidStack?, doFill: Boolean): Int
 
     class Storage : Capability.IStorage<IExtendedFluidHandler> {
         override fun readNBT(capability: Capability<IExtendedFluidHandler>?, instance: IExtendedFluidHandler, side: EnumFacing?, nbt: NBTBase?) {

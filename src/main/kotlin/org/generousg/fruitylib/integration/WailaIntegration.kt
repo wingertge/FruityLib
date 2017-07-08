@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import org.generousg.fruitylib.FruityLib
 import org.generousg.fruitylib.blocks.FruityBlock
+import org.generousg.fruitylib.emptyItemStack
 
 class WailaIntegration private constructor(): IWailaDataProvider {
     companion object {
@@ -22,20 +23,24 @@ class WailaIntegration private constructor(): IWailaDataProvider {
         }
 
         fun callbackRegister(registrar: IWailaRegistrar) {
-            registrar.registerHeadProvider(instance, FruityBlock::class.java)
+            registrar.registerBodyProvider(instance, FruityBlock::class.java)
         }
     }
 
-    override fun getWailaTail(itemStack: ItemStack?, currenttip: MutableList<String>?, accessor: IWailaDataAccessor?, config: IWailaConfigHandler?): MutableList<String> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getWailaTail(itemStack: ItemStack?, currenttip: MutableList<String>, accessor: IWailaDataAccessor?, config: IWailaConfigHandler?): MutableList<String> {
+        return currenttip
     }
 
-    override fun getNBTData(player: EntityPlayerMP?, te: TileEntity?, tag: NBTTagCompound?, world: World?, pos: BlockPos?): NBTTagCompound {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getNBTData(player: EntityPlayerMP?, te: TileEntity?, tag: NBTTagCompound, world: World?, pos: BlockPos?): NBTTagCompound {
+        return tag
+    }
+
+    override fun getWailaHead(itemStack: ItemStack, currenttip: MutableList<String>, accessor: IWailaDataAccessor, config: IWailaConfigHandler): MutableList<String> {
+        return currenttip
     }
 
     @Suppress("DEPRECATION")
-    override fun getWailaHead(itemStack: ItemStack, currenttip: MutableList<String>, accessor: IWailaDataAccessor, config: IWailaConfigHandler): MutableList<String> {
+    override fun getWailaBody(itemStack: ItemStack, currenttip: MutableList<String>, accessor: IWailaDataAccessor, config: IWailaConfigHandler): MutableList<String> {
         val block = accessor.block
         if(block is FruityBlock && block.hasInfo) block.addInformation(accessor.stack, accessor.player, currenttip, false)
         if(FruityLib.DEBUG_MODE) {
@@ -46,11 +51,7 @@ class WailaIntegration private constructor(): IWailaDataProvider {
         return currenttip
     }
 
-    override fun getWailaBody(itemStack: ItemStack?, currenttip: MutableList<String>?, accessor: IWailaDataAccessor?, config: IWailaConfigHandler?): MutableList<String> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun getWailaStack(accessor: IWailaDataAccessor, config: IWailaConfigHandler): ItemStack {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return emptyItemStack
     }
 }
