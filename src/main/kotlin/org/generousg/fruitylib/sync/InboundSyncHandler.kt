@@ -15,7 +15,7 @@ class InboundSyncHandler : SimpleChannelInboundHandler<FMLProxyPacket>() {
     }
 
     override fun channelRead0(ctx: ChannelHandlerContext, msg: FMLProxyPacket) {
-        val world = FruityLib.proxy?.clientWorld
+        val world = FruityLib.proxy.clientWorld
 
         val payload = msg.payload()
         val input = DataInputStream(ByteBufInputStream(payload))

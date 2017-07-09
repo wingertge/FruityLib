@@ -81,7 +81,7 @@ class NetworkEventCodec(private val registry: NetworkEventRegistry) : MessageToM
         event.dispatcher = msg.dispatcher
 
         val handler = msg.handler()
-        if (handler != null) event.sender = FruityLib.proxy!!.getPlayerFromHandler(handler)
+        if (handler != null) event.sender = FruityLib.proxy.getPlayerFromHandler(handler)
 
         val bufferJunkSize = input.available()
         if (bufferJunkSize > 0) {

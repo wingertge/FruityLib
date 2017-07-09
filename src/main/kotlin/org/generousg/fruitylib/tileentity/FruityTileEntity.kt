@@ -1,5 +1,6 @@
 package org.generousg.fruitylib.tileentity
 
+import net.minecraft.block.Block
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
@@ -27,7 +28,7 @@ abstract class FruityTileEntity : TileEntity(), IRpcTargetProvider {
     private val isUsedForClientInventoryRendering = false
 
     val dimCoords get() = DimCoord(world.provider.dimension, getPos().x, getPos().y, getPos().z)
-    val block by lazy { world.getBlockState(pos).block }
+    val block: Block by lazy { world.getBlockState(pos).block }
 
     /** Place for TE specific setup. Called once upon creation */
     open fun setup() {}
@@ -45,19 +46,19 @@ abstract class FruityTileEntity : TileEntity(), IRpcTargetProvider {
     fun isRenderedInInventory() = isUsedForClientInventoryRendering
     override fun createRpcTarget(): IRpcTarget = TileEntityRpcTarget(this)
     fun <T> createProxy(sender: IPacketSender, mainIntf: Class<out T>, vararg extraIntf: Class<out T>): T {
-        TypeUtils.isInstance(this, mainIntf, *extraIntf)
-        return RpcCallDispatcher.instance.value.createProxy(createRpcTarget(), sender, mainIntf, *extraIntf)
+        TypeUtils.requireIsInstance(this, mainIntf, *extraIntf)
+        return RpcCallDispatcher.instance.createProxy(createRpcTarget(), sender, mainIntf, *extraIntf)
     }
 
     @Suppress("UNCHECKED_CAST")
     fun <T> createClientRpcProxy(mainIntf: Class<out T>, vararg extraIntf: Class<*>): T {
-        val sender = RpcCallDispatcher.instance.value.senders.client
+        val sender = RpcCallDispatcher.instance.senders.client
         return createProxy(sender, mainIntf, *(extraIntf as Array<out Class<out T>>))
     }
 
     @Suppress("UNCHECKED_CAST")
     fun <T> createServerRpcProxy(mainIntf: Class<out T>, vararg extraIntf: Class<*>): T {
-        val sender = RpcCallDispatcher.instance.value.senders.block.bind(dimCoords)
+        val sender = RpcCallDispatcher.instance.senders.block.bind(dimCoords)
         return createProxy(sender, mainIntf, *(extraIntf as Array<out Class<out T>>))
     }
 

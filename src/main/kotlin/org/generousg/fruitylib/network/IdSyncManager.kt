@@ -74,7 +74,7 @@ class IdSyncManager private constructor() : DataStoreManager() {
         @Throws(Exception::class)
         override fun userEventTriggered(ctx: ChannelHandlerContext, evt: Any) {
             if(evt is NetworkHandshakeEstablished) {
-                Log.debug("Sending id data for player: ${FruityLib.proxy?.getPlayerFromHandler(evt.netHandler)}")
+                Log.debug("Sending id data for player: ${FruityLib.proxy.getPlayerFromHandler(evt.netHandler)}")
                 sendAllIds(ctx)
             } else {
                 ctx.fireUserEventTriggered(evt)

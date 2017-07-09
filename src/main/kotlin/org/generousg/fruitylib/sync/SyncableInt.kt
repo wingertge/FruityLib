@@ -4,9 +4,18 @@ import net.minecraft.nbt.NBTTagCompound
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
+import kotlin.reflect.KProperty
 
 
 class SyncableInt : SyncableObjectBase, ISyncableValueProvider<Int> {
+    override fun getValue(thisRef: Any?, property: KProperty<*>): Int {
+        return value
+    }
+
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
+        this.value = value
+    }
+
     private var _value = 0
     override var value: Int set(nValue) {
         if(nValue != _value) markDirty()

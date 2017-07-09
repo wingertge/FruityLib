@@ -11,7 +11,6 @@ import net.minecraft.block.state.IBlockState
 import net.minecraft.client.resources.I18n
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.inventory.IInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
@@ -21,8 +20,8 @@ import net.minecraft.util.math.RayTraceResult
 import net.minecraft.world.Explosion
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
+import org.generousg.fruitylib.api.IPlacerAwareTile
 import org.generousg.fruitylib.client.gui.IHasGui
-import org.generousg.fruitylib.inventory.IInventoryProvider
 import org.generousg.fruitylib.tileentity.FruityTileEntity
 import org.generousg.fruitylib.tileentity.ICustomHarvestDrops
 import org.generousg.fruitylib.tileentity.ICustomPickItem
@@ -34,12 +33,6 @@ abstract class FruityBlock(material: Material, var hasInfo: Boolean = false) : B
     companion object {
         val FACING: PropertyDirection = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL)
         val FRUITY_LIB_TE_GUI = -2
-    }
-
-    private enum class TileEntityCapability constructor(val intf: Class<*>) {
-        GUI_PROVIDER(IHasGui::class.java),
-        INVENTORY(IInventory::class.java),
-        INVENTORY_PROVIDER(IInventoryProvider::class.java)
     }
 
     internal var teClass: Class<out TileEntity>? = null
@@ -68,6 +61,10 @@ abstract class FruityBlock(material: Material, var hasInfo: Boolean = false) : B
     override fun onBlockPlacedBy(worldIn: World, pos: BlockPos, state: IBlockState, placer: EntityLivingBase, stack: ItemStack) {
         worldIn.setBlockState(pos, state.withProperty(FACING, placer.horizontalFacing.opposite), 2)
         placeEvent.fire(BlockPlacedEvent(worldIn, pos, state, placer, stack))
+        if(hasCapability(ICustomPickItem::class)) {
+            val te = worldIn.getTileEntity(pos)
+            if (te is IPlacerAwareTile) te.onBlockPlacedBy(placer, stack)
+        }
         super.onBlockPlacedBy(worldIn, pos, state, placer, stack)
     }
 

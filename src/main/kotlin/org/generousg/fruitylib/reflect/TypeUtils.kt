@@ -30,7 +30,7 @@ class TypeUtils {
             FUNCTION_B_PARAM = functionVars[1]
         }
 
-        fun isInstance(o: Any, mainCls: Class<*>, vararg extraCls: Class<*>) {
+        fun requireIsInstance(o: Any, mainCls: Class<*>, vararg extraCls: Class<*>) {
             require(mainCls.isInstance(o)) { "$o is not instance of $mainCls" }
             for(cls in extraCls) {
                 require(cls.isInstance(o)) { "$o is not instance of $cls" }

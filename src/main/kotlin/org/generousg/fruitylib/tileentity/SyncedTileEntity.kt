@@ -61,10 +61,10 @@ abstract class SyncedTileEntity : FruityTileEntity(), ISyncMapProvider {
     }
 
     fun <T> createRpcProxy(`object`: ISyncableObject, mainIntf: Class<out T>, vararg extraIntf: Class<*>): T {
-        TypeUtils.isInstance(`object`, mainIntf, *extraIntf)
+        TypeUtils.requireIsInstance(`object`, mainIntf, *extraIntf)
         val target = SyncRpcTarget.SyncTileEntityRpcTarget(this, `object`)
-        val sender = RpcCallDispatcher.instance.value.senders.client
-        return RpcCallDispatcher.instance.value.createProxy(target, sender, mainIntf, *extraIntf)
+        val sender = RpcCallDispatcher.instance.senders.client
+        return RpcCallDispatcher.instance.createProxy(target, sender, mainIntf, *extraIntf)
     }
 
     override fun getUpdateTag(): NBTTagCompound {

@@ -30,7 +30,7 @@ import org.generousg.fruitylib.util.Log
 class FruityLib {
     companion object {
         @SidedProxy(clientSide = "org.generousg.fruitylib.proxy.ClientProxy", serverSide = "org.generousg.fruitylib.proxy.ServerProxy")
-        var proxy: FruityLibProxy? = null
+        lateinit var proxy: FruityLibProxy
         val eventQueue = EventQueue()
         val FRUITY_LIB_TE_GUI = ""
         var DEBUG_MODE = false
@@ -40,8 +40,8 @@ class FruityLib {
     fun preInit(event: FMLPreInitializationEvent) {
         registerCapabilities()
         SyncChannelHolder.ensureLoaded()
-        NetworkEventManager.instance.value.startRegistration()
-        RpcCallDispatcher.instance.value.startRegistration()
+        NetworkEventManager.instance.startRegistration()
+        RpcCallDispatcher.instance.startRegistration()
                 .registerTargetWrapper(EntityRpcTarget::class.java)
                 .registerTargetWrapper(TileEntityRpcTarget::class.java)
                 .registerTargetWrapper(SyncRpcTarget.SyncEntityRpcTarget::class.java)
@@ -53,7 +53,7 @@ class FruityLib {
         ConfigProcessing.processAnnotations("fruitylib", config, LibConfig::class.java)*/
 
         MinecraftForge.EVENT_BUS.register(ConfigStorage.instance)
-        proxy?.preInit(event)
+        proxy.preInit(event)
         eventQueue.preInit(event)
 
         Integration.addModule(IntegrationUtil.createSimpleModule("fl_waila", {
@@ -64,17 +64,17 @@ class FruityLib {
     @Mod.EventHandler
     fun init(event: FMLInitializationEvent) {
         Integration.init()
-        proxy?.init(event)
+        proxy.init(event)
         eventQueue.init(event)
     }
 
     @Mod.EventHandler
     fun postInit(event: FMLPostInitializationEvent) {
-        proxy?.postInit(event)
+        proxy.postInit(event)
         eventQueue.postInit(event)
 
-        NetworkEventManager.instance.value.finalizeRegistration()
-        RpcCallDispatcher.instance.value.finishRegistration()
+        NetworkEventManager.instance.finalizeRegistration()
+        RpcCallDispatcher.instance.finishRegistration()
 
         //after all builders are done
         IdSyncManager.instance.value.finishLoading()

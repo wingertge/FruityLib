@@ -7,10 +7,19 @@ import net.minecraft.util.math.BlockPos
 import org.generousg.fruitylib.util.ByteUtils
 import java.io.DataInputStream
 import java.io.DataOutputStream
+import kotlin.reflect.KProperty
 
 
 @Suppress("DEPRECATION")
-class SyncableCoordList : SyncableObjectBase(), ISyncableValueProvider<List<BlockPos>>, Iterable<BlockPos> {
+class SyncableCoordList : SyncableObjectBase(), ISyncableValueProvider<MutableList<BlockPos>>, Iterable<BlockPos> {
+    override fun getValue(thisRef: Any?, property: KProperty<*>): MutableList<BlockPos> {
+        return value
+    }
+
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: MutableList<BlockPos>) {
+        this.value = value
+    }
+
     @Deprecated("DO NOT USE!!! WILL NOT WORK!!!")
     override var value = mutableListOf<BlockPos>()
     val size get() = value.size

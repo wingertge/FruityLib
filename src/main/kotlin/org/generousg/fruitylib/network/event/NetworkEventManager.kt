@@ -57,6 +57,6 @@ class NetworkEventManager private constructor() {
 
     companion object {
 
-        val instance = lazy { NetworkEventManager() }
+        val instance by lazy { NetworkEventManager() }
     }
 }

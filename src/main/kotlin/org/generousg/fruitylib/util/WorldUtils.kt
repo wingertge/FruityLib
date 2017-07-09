@@ -9,7 +9,7 @@ import org.generousg.fruitylib.FruityLib
 class WorldUtils {
     companion object {
         fun getWorld(dimensionId: Int): World? {
-            val result = if(FMLCommonHandler.instance().effectiveSide == Side.SERVER) FruityLib.proxy?.getServerWorld(dimensionId) else FruityLib.proxy?.clientWorld
+            val result = if(FMLCommonHandler.instance().effectiveSide == Side.SERVER) FruityLib.proxy.getServerWorld(dimensionId) else FruityLib.proxy.clientWorld
             require(result?.provider?.dimension == dimensionId) { "Invalid client dimension id $dimensionId" }
             return result
         }

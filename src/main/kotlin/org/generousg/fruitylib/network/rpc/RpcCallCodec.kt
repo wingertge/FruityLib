@@ -71,7 +71,7 @@ class RpcCallCodec(private val targetRegistry: TargetWrapperRegistry, private va
 
     protected fun getPlayer(msg: FMLProxyPacket): EntityPlayer {
         val handler = msg.handler()
-        val player = FruityLib.proxy!!.getPlayerFromHandler(handler)
+        val player = FruityLib.proxy.getPlayerFromHandler(handler)
         Preconditions.checkNotNull(player, "Can't get player from handler %s", handler)
         return player!!
     }

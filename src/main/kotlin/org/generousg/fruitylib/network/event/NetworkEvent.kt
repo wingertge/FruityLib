@@ -35,22 +35,22 @@ abstract class NetworkEvent : Event() {
     }
 
     fun sendToAll() {
-        NetworkEventManager.instance.value.dispatcher().senders.global.sendMessage(this)
+        NetworkEventManager.instance.dispatcher().senders.global.sendMessage(this)
     }
 
     fun sendToServer() {
-        NetworkEventManager.instance.value.dispatcher().senders.client.sendMessage(this)
+        NetworkEventManager.instance.dispatcher().senders.client.sendMessage(this)
     }
 
     fun sendToPlayer(player: EntityPlayer) {
-        NetworkEventManager.instance.value.dispatcher().senders.player.sendMessage(this, player)
+        NetworkEventManager.instance.dispatcher().senders.player.sendMessage(this, player)
     }
 
     fun sendToEntity(entity: Entity) {
-        NetworkEventManager.instance.value.dispatcher().senders.entity.sendMessage(this, entity)
+        NetworkEventManager.instance.dispatcher().senders.entity.sendMessage(this, entity)
     }
 
     fun serialize(): List<Any?> {
-        return NetworkEventManager.instance.value.dispatcher().senders.serialize(this)
+        return NetworkEventManager.instance.dispatcher().senders.serialize(this)
     }
 }

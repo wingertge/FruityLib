@@ -9,15 +9,29 @@ import net.minecraftforge.common.util.Constants
 import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.fluids.FluidStack
+import org.generousg.fruitylib.add
 import org.generousg.fruitylib.liquids.GenericTank
+import org.generousg.fruitylib.subtract
 import org.generousg.fruitylib.util.ByteUtils
+import org.generousg.fruitylib.util.events.Event
+import org.generousg.fruitylib.util.events.ValueChangedEvent
 import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
+import kotlin.reflect.KProperty
 
 
-open class SyncableTank : GenericTank, ISyncableObject, ISyncableValueProvider<FluidStack?> {
+open class SyncableTank : GenericTank, ISyncableObject, ISyncableValueProvider<GenericTank> {
+    val fluidChangedEvent = Event<ValueChangedEvent<FluidStack?>>()
+
+    override fun getValue(thisRef: Any?, property: KProperty<*>): GenericTank {
+        return value
+    }
+
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: GenericTank) {
+
+    }
 
     private var dirty = false
 
@@ -107,43 +121,57 @@ open class SyncableTank : GenericTank, ISyncableObject, ISyncableValueProvider<F
 
     override fun fill(resource: FluidStack?, doFill: Boolean): Int {
         val filled = super.fill(resource, doFill)
-        if (doFill && filled > 0) markDirty()
+        if (doFill && filled > 0) {
+            markDirty()
+            fluidChangedEvent.fire(ValueChangedEvent(fluid, fluid?.subtract(filled)))
+        }
         return filled
     }
 
     override fun drain(resource: FluidStack?, doDrain: Boolean): FluidStack? {
         val drained = super.drain(resource, doDrain)
-        if (doDrain && drained != null) markDirty()
+        if (doDrain && drained != null) {
+            markDirty()
+            fluidChangedEvent.fire(ValueChangedEvent(fluid, fluid?.add(drained)))
+        }
         return drained
     }
 
     override fun drain(maxDrain: Int, doDrain: Boolean): FluidStack? {
         val drained = super.drain(maxDrain, doDrain)
-        if (doDrain && drained != null) markDirty()
+        if (doDrain && drained != null) {
+            markDirty()
+            fluidChangedEvent.fire(ValueChangedEvent(fluid, fluid?.add(drained)))
+        }
         return drained
     }
 
     override fun fillInternal(resource: FluidStack?, doFill: Boolean): Int {
         val filled = super.fillInternal(resource, doFill)
-        if (doFill && filled > 0) markDirty()
+        if (doFill && filled > 0) {
+            markDirty()
+            fluidChangedEvent.fire(ValueChangedEvent(fluid, fluid?.subtract(filled)))
+        }
         return filled
     }
 
     override fun drainInternal(resource: FluidStack?, doDrain: Boolean): FluidStack? {
         val drained = super.drainInternal(resource, doDrain)
-        if (doDrain && drained != null) markDirty()
+        if (doDrain && drained != null) {
+            markDirty()
+            fluidChangedEvent.fire(ValueChangedEvent(fluid, fluid?.add(drained)))
+        }
         return drained
     }
 
     override fun drainInternal(maxDrain: Int, doDrain: Boolean): FluidStack? {
         val drained = super.drainInternal(maxDrain, doDrain)
-        if (doDrain && drained != null) markDirty()
+        if (doDrain && drained != null) {
+            markDirty()
+            fluidChangedEvent.fire(ValueChangedEvent(fluid, fluid?.add(drained)))
+        }
         return drained
     }
 
-    override val value: FluidStack?
-        get() {
-            val stack = super.getFluid()
-            return stack?.copy()
-        }
+    override val value get() = this
 }

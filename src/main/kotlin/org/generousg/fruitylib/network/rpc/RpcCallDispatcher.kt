@@ -14,7 +14,7 @@ import org.generousg.fruitylib.network.senders.IPacketSender
 class RpcCallDispatcher private constructor(): Dispatcher() {
     private object InstanceHolder { val INSTANCE = RpcCallDispatcher() }
     companion object {
-        val instance = lazy { InstanceHolder.INSTANCE }
+        val instance by lazy { InstanceHolder.INSTANCE }
         val CHANNEL_NAME = "FruityLib|RPC"
     }
 
@@ -35,7 +35,7 @@ class RpcCallDispatcher private constructor(): Dispatcher() {
         this.senders = Senders()
     }
 
-    protected override fun getChannel(side: Side): FMLEmbeddedChannel {
+    override fun getChannel(side: Side): FMLEmbeddedChannel {
         return channels[side]!!
     }
 

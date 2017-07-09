@@ -126,8 +126,11 @@ class ConfigProvider() {
                     block.creativeTab = creativeTabs[annotation.creativeTab]
                 setItemPrefixedId(annotation.unlocalizedName, name, langDecorator, { block.unlocalizedName = it})
                 if(block is FruityItem) block.hasInfo = annotation.hasInfo
-                if(FMLCommonHandler.instance().effectiveSide == Side.CLIENT && !annotation.specialModel)
-                    ModelLoader.setCustomModelResourceLocation(block, 0, ModelResourceLocation(block.registryName, "inventory"))
+                if(FMLCommonHandler.instance().effectiveSide == Side.CLIENT) {
+                    if(annotation.modelName == "[default]")
+                        ModelLoader.setCustomModelResourceLocation(block, 0, ModelResourceLocation(block.registryName, "inventory"))
+                    else ModelLoader.setCustomModelResourceLocation(block, 0, ModelResourceLocation(annotation.modelName, "inventory"))
+                }
             }
 
             override fun getEntryName(annotation: RegisterItem): String = annotation.name
@@ -164,8 +167,11 @@ class ConfigProvider() {
                 if(block is FruityBlock) block.hasInfo = annotation.hasInfo
 
 
-                if(FMLCommonHandler.instance().effectiveSide == Side.CLIENT && !annotation.specialModel && block is FruityBlock)
-                    ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, ModelResourceLocation(block.registryName, "inventory"))
+                if(FMLCommonHandler.instance().effectiveSide == Side.CLIENT && block is FruityBlock) {
+                    if(annotation.modelName == "[default]")
+                        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, ModelResourceLocation(block.registryName, "inventory"))
+                    else ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, ModelResourceLocation(annotation.modelName, "inventory"))
+                }
             }
 
             override fun getEntryName(annotation: RegisterBlock): String = annotation.name
