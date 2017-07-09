@@ -26,9 +26,11 @@ abstract class TileEntityMultiblockPart : SyncedTileEntity(), IHasGui, ITickable
 
     init {
         syncMap.inboundSyncEvent += {
-            @Suppress("DEPRECATION")
-            val state = block.getActualState(block.blockState.baseState, world, pos)
-            world.setBlockState(pos, state, 0)
+            if(it.changes.contains(multiblockId)) {
+                @Suppress("DEPRECATION")
+                val state = block.getActualState(block.blockState.baseState, world, pos)
+                world.setBlockState(pos, state, 0)
+            }
         }
     }
 

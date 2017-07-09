@@ -8,13 +8,21 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.util.text.TextFormatting
 import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.fluids.FluidStack
+import org.generousg.fruitylib.client.gui.IHasTooltip
 import org.generousg.fruitylib.client.gui.TextureUtils
 import org.generousg.fruitylib.client.gui.misc.BoxRenderer
 import org.generousg.fruitylib.util.events.ValueChangedEvent
 import org.lwjgl.opengl.GL11
 
 
-class GuiComponentTankLevel(x: Int, y: Int, width: Int, height: Int, var capacity: Int, val fluidName: String = "") : GuiComponentResizable(x, y, width, height) {
+class GuiComponentTankLevel(x: Int, y: Int, width: Int, height: Int, var capacity: Int, val fluidName: String = "") : GuiComponentResizable(x, y, width, height), IHasTooltip {
+    override fun getText(): List<String> {
+        var fluid = fluidStack?.fluid
+        if(fluid == null && fluidName != "") fluid = FluidRegistry.getFluid(fluidName)
+        if(fluid == null) return arrayListOf("Empty")
+        else return arrayListOf(fluid.getLocalizedName(fluidStack), "${TextFormatting.GRAY}${fluidStack?.amount ?: 0}mB / ${capacity}mB")
+    }
+
     private val BOX_RENDERER = BoxRenderer(0, 0)
     private val BORDER_COLOR = 0xc6c6c6
 
@@ -71,14 +79,7 @@ class GuiComponentTankLevel(x: Int, y: Int, width: Int, height: Int, var capacit
     }
 
     override fun renderOverlay(mc: Minecraft, offsetX: Int, offsetY: Int, mouseX: Int, mouseY: Int) {
-        if(isMouseOver(mouseX, mouseY)) {
-            var fluid = fluidStack?.fluid
-            if(fluid == null && fluidName != "") fluid = FluidRegistry.getFluid(fluidName)
-            if(fluid == null) drawHoveringText("Empty", mouseX, mouseY, mc.fontRendererObj)
-            else drawHoveringText(arrayListOf(fluid.getLocalizedName(fluidStack),
-                    "${TextFormatting.GRAY}${fluidStack?.amount ?: 0}mB / ${capacity}mB"),
-                    offsetX + mouseX, offsetY + mouseY, mc.fontRendererObj)
-        }
+
     }
 
     val fluidReceiver: (ValueChangedEvent<FluidStack?>)->Unit = { fluidStack = it.value }

@@ -11,10 +11,10 @@ open class GuiComponentTabWrapper(x: Int, y: Int, protected val mainComponent: B
     protected var activeTab: GuiComponentTab? = null
 
     init {
-        addComponent(mainComponent)
+        addComponentWithTT(mainComponent)
     }
 
-    override fun addComponent(component: BaseComponent): BaseComposite {
+    fun addComponentWithTT(component: BaseComponent): BaseComposite {
         super.addComponent(component)
         if(component is GuiComponentTab) {
             component.x += mainComponent.width

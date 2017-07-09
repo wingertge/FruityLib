@@ -2,6 +2,7 @@ package org.generousg.fruitylib.client.gui
 
 import com.google.common.collect.ImmutableList
 import net.minecraft.client.Minecraft
+import org.generousg.fruitylib.client.gui.components.GuiComponentTooltip
 import org.generousg.fruitylib.util.events.KeyPressedEvent
 import org.generousg.fruitylib.util.events.MouseClickEvent
 import org.generousg.fruitylib.util.events.MouseDragEvent
@@ -38,6 +39,12 @@ abstract class BaseComposite(x: Int, y: Int) : BaseComponent(x, y) {
         components.add(component)
         if(component.isTicking()) tickingComponents.add(component)
         return this
+    }
+
+    open fun <T> addComponentWithTT(component: T, container: ComponentGui) where T : BaseComponent, T : IHasTooltip {
+        components.add(component)
+        if(component.isTicking()) tickingComponents.add(component)
+        components.add(GuiComponentTooltip(component, container))
     }
 
     protected abstract fun renderComponentBackground(minecraft: Minecraft, offsetX: Int, offsetY: Int, mouseX: Int, mouseY: Int)
