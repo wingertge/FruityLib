@@ -4,6 +4,7 @@ import mcp.mobius.waila.api.IWailaConfigHandler
 import mcp.mobius.waila.api.IWailaDataAccessor
 import mcp.mobius.waila.api.IWailaDataProvider
 import mcp.mobius.waila.api.IWailaRegistrar
+import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -42,7 +43,7 @@ class WailaIntegration private constructor(): IWailaDataProvider {
     @Suppress("DEPRECATION")
     override fun getWailaBody(itemStack: ItemStack, currenttip: MutableList<String>, accessor: IWailaDataAccessor, config: IWailaConfigHandler): MutableList<String> {
         val block = accessor.block
-        if(block is FruityBlock && block.hasInfo) block.addInformation(accessor.stack, accessor.player, currenttip, false)
+        if(block is FruityBlock && block.hasInfo) block.addInformation(accessor.stack, accessor.player.entityWorld, currenttip, ITooltipFlag.TooltipFlags.NORMAL)
         if(FruityLib.DEBUG_MODE) {
             for ((key, value) in accessor.block.getActualState(accessor.blockState, accessor.world, accessor.position).properties) {
                 currenttip.add("${key.getName()}: ${(value as Enum<*>).name}")

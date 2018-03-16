@@ -29,7 +29,7 @@ open class FactoryRegistry<T : Any> {
         try {
             return clazz.newInstance()
         } catch (e: Exception) {
-            throw Throwables.propagate(e)
+            throw RuntimeException(e)
         }
     }
 
@@ -45,7 +45,7 @@ open class FactoryRegistry<T : Any> {
         try {
             return clazz.getDeclaredConstructor(Block::class.java).newInstance(block)
         } catch (e: Exception) {
-            throw Throwables.propagate(e)
+            throw RuntimeException(e)
         }
     }
 }

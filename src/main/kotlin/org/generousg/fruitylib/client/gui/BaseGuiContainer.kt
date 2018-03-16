@@ -17,10 +17,10 @@ open class BaseGuiContainer<out T : ContainerBase<*>>(container: T, width: Int, 
     override fun drawGuiContainerForegroundLayer(mouseX: Int, mouseY: Int) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY)
         val machineName = I18n.format(name)
-        val x = xSize / 2 - (fontRendererObj.getStringWidth(machineName) / 2)
-        fontRendererObj.drawString(machineName, x, 6, 4210752)
+        val x = xSize / 2 - (fontRenderer.getStringWidth(machineName) / 2)
+        fontRenderer.drawString(machineName, x, 6, 4210752)
         val translatedName = I18n.format("container.inventory")
-        fontRendererObj.drawString(translatedName, 8, this.ySize - 96 + 2, 4210752)
+        fontRenderer.drawString(translatedName, 8, this.ySize - 96 + 2, 4210752)
     }
 
     fun sendButtonClick(buttonId: Int) = mc.playerController.sendEnchantPacket(container.windowId, buttonId)

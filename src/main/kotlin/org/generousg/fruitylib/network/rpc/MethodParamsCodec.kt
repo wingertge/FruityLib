@@ -84,7 +84,7 @@ class MethodParamsCodec(private val method: Method) {
             }
             output.writeBoolean(true)
         } else {
-            Preconditions.checkNotNull<Any>(value, "Only @NullableArg arguments can be null")
+            checkNotNull(value, {"Only @NullableArg arguments can be null"})
         }
 
         writer.writeToStream(value, output)

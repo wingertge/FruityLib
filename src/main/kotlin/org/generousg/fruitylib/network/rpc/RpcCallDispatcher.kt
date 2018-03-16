@@ -15,7 +15,7 @@ class RpcCallDispatcher private constructor(): Dispatcher() {
     private object InstanceHolder { val INSTANCE = RpcCallDispatcher() }
     companion object {
         val instance by lazy { InstanceHolder.INSTANCE }
-        val CHANNEL_NAME = "FruityLib|RPC"
+        const val CHANNEL_NAME = "FruityLib|RPC"
     }
 
     val senders: Senders

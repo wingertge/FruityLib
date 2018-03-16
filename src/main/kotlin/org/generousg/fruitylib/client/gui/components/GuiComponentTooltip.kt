@@ -19,8 +19,8 @@ class GuiComponentTooltip<out T>(val parent: T, val container: ComponentGui) : B
     override fun renderOverlay(mc: Minecraft, offsetX: Int, offsetY: Int, mouseX: Int, mouseY: Int) {
         if(parent.isMouseOver(mouseX, mouseY)) {
             val text = parent.getText()
-            val width = getWidth(mc.fontRendererObj, text)
-            val height = getHeight(mc.fontRendererObj, text)
+            val width = getWidth(mc.fontRenderer, text)
+            val height = getHeight(mc.fontRenderer, text)
             var x = offsetX + mouseX
             var y = offsetY + mouseY
             if(x > container.width - width - 7)
@@ -44,7 +44,7 @@ class GuiComponentTooltip<out T>(val parent: T, val container: ComponentGui) : B
             drawGradientRect(x, y + height + 5, x + width + 7, y + height + 6, outerAlpha2, outerAlpha2)
 
             text.withIndex().forEach { (i, s) ->
-                mc.fontRendererObj.drawStringWithShadow(s, (x + 2).toFloat(), (y + 2 + i * (mc.fontRendererObj.FONT_HEIGHT + 1)).toFloat(), 0xFFFFFF)
+                mc.fontRenderer.drawStringWithShadow(s, (x + 2).toFloat(), (y + 2 + i * (mc.fontRenderer.FONT_HEIGHT + 1)).toFloat(), 0xFFFFFF)
             }
         }
     }

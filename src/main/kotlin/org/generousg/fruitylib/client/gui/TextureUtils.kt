@@ -14,7 +14,7 @@ class TextureUtils {
 
         fun bindTextureToClient(texture: ResourceLocation) {
             val mc = Minecraft.getMinecraft()
-            mc?.renderEngine?.bindTexture(texture)
+            mc.renderEngine?.bindTexture(texture)
         }
 
         fun getStillTexture(fluid: FluidStack?): TextureAtlasSprite? {

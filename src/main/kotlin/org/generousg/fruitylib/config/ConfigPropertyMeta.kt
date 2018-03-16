@@ -76,7 +76,7 @@ abstract class ConfigPropertyMeta protected constructor(config: Configuration, v
         try {
             field.set(null, value)
         } catch (e: Throwable) {
-            throw Throwables.propagate(e)
+            throw RuntimeException(e)
         }
     }
 
@@ -84,7 +84,7 @@ abstract class ConfigPropertyMeta protected constructor(config: Configuration, v
         try {
             return field.get(null)
         } catch (e: Throwable) {
-            throw Throwables.propagate(e)
+            throw RuntimeException(e)
         }
     }
 

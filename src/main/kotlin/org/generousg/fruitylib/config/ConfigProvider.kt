@@ -11,12 +11,14 @@ import net.minecraft.item.ItemBlock
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.model.ModelLoader
+import net.minecraftforge.event.RegistryEvent
 import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.Loader
 import net.minecraftforge.fml.common.registry.GameRegistry
 import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.registries.IForgeRegistry
 import org.generousg.fruitylib.blocks.FruityBlock
 import org.generousg.fruitylib.items.FruityItem
 import org.generousg.fruitylib.util.Log
@@ -46,6 +48,8 @@ class ConfigProvider() {
     val itemFactory = FactoryRegistry<Item>()
     val itemBlockFactory = FactoryRegistry<ItemBlock>()
     var creativeTabs = hashMapOf<String, CreativeTabs>()
+    private val blocks = mutableListOf<Block>()
+    private val items = mutableListOf<Item>()
 
     private class IdDecorator(val joiner: String) {
         private var modId: String = ""
@@ -69,7 +73,7 @@ class ConfigProvider() {
         creativeTabs = populateCreativeTabs(mainClass)
 
         val mod = Loader.instance().activeModContainer()
-        Preconditions.checkNotNull(mod, "This class can only be initialized in mod init")
+        checkNotNull(mod, {"This class can only be initialized in mod init"})
         this.modId = mod?.modId ?: "null"
     }
 
@@ -117,18 +121,18 @@ class ConfigProvider() {
         }
     }
 
-    fun registerItems(clazz: Class<out ItemInstances>) {
+    fun prepareItems(clazz: Class<out ItemInstances>) {
         processAnnotations(clazz, Item::class.java, RegisterItem::class.java, itemFactory, object : IAnnotationProcessor<Item, RegisterItem> {
             override fun process(block: Item, annotation: RegisterItem) {
                 val name = annotation.name
-                GameRegistry.register(block.setRegistryName(name))
+                items.add(block.setRegistryName(name))
                 if(annotation.creativeTab != "[none]" && creativeTabs[annotation.creativeTab] != null)
                     block.creativeTab = creativeTabs[annotation.creativeTab]
                 setItemPrefixedId(annotation.unlocalizedName, name, langDecorator, { block.unlocalizedName = it})
                 if(block is FruityItem) block.hasInfo = annotation.hasInfo
                 if(FMLCommonHandler.instance().effectiveSide == Side.CLIENT) {
                     if(annotation.modelName == "[default]")
-                        ModelLoader.setCustomModelResourceLocation(block, 0, ModelResourceLocation(block.registryName, "inventory"))
+                        ModelLoader.setCustomModelResourceLocation(block, 0, ModelResourceLocation(block.registryName!!, "inventory"))
                     else ModelLoader.setCustomModelResourceLocation(block, 0, ModelResourceLocation(annotation.modelName, "inventory"))
                 }
             }
@@ -138,20 +142,20 @@ class ConfigProvider() {
         })
     }
 
-    fun registerBlocks(clazz: Class<out BlockInstances>) {
+    fun prepareBlocks(clazz: Class<out BlockInstances>) {
         processAnnotations(clazz, Block::class.java, RegisterBlock::class.java, blockFactory, object: IAnnotationProcessor<Block, RegisterBlock> {
             override fun process(block: Block, annotation: RegisterBlock) {
                 val name = annotation.name
                 val itemBlockClass = annotation.itemBlock
                 val teClass = annotation.tileEntity
 
-                GameRegistry.register(block.setRegistryName(genericDecorator.decorate(name)))
+                blocks.add(block.setRegistryName(genericDecorator.decorate(name)))
                 if(annotation.creativeTab != "[none]" && creativeTabs[annotation.creativeTab] != null)
-                    block.setCreativeTab(creativeTabs[annotation.creativeTab])
+                    block.setCreativeTab(creativeTabs[annotation.creativeTab]!!)
                 setBlockPrefixedId(annotation.unlocalizedName, name, langDecorator, { block.unlocalizedName = it})
 
                 val itemBlock = itemBlockFactory.constructItemBlock(name, itemBlockClass.java, block)
-                GameRegistry.register(itemBlock, ResourceLocation(genericDecorator.decorate(name)))
+                items.add(itemBlock.setRegistryName(genericDecorator.decorate(name)))
 
                 if(teClass != TileEntity::class) {
                     val teName = "te_$name"
@@ -169,7 +173,7 @@ class ConfigProvider() {
 
                 if(FMLCommonHandler.instance().effectiveSide == Side.CLIENT && block is FruityBlock) {
                     if(annotation.modelName == "[default]")
-                        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, ModelResourceLocation(block.registryName, "inventory"))
+                        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, ModelResourceLocation(block.registryName!!, "inventory"))
                     else ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, ModelResourceLocation(annotation.modelName, "inventory"))
                 }
             }
@@ -177,6 +181,14 @@ class ConfigProvider() {
             override fun getEntryName(annotation: RegisterBlock): String = annotation.name
             override fun isEnabled(name: String): Boolean = features.isBlockEnabled(name)
         })
+    }
+
+    fun registerBlocks(registry: IForgeRegistry<Block>) {
+        blocks.forEach { registry.register(it) }
+    }
+
+    fun registerItems(registry: IForgeRegistry<Item>) {
+        items.forEach { registry.register(it) }
     }
 
     companion object Factory {
@@ -203,7 +215,7 @@ class ConfigProvider() {
                     try {
                         field.set(null, entry)
                     } catch (e: Exception) {
-                        throw Throwables.propagate(e)
+                        throw RuntimeException(e)
                     }
 
                     processor.process(entry, annotation)

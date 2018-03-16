@@ -21,7 +21,7 @@ class ReflectionHelper {
                         ReflectionLog.logLoad(f)
                         return f
                     } catch (e: NoSuchFieldException) { } catch (e: Exception) {
-                        throw Throwables.propagate(e)
+                        throw RuntimeException(e)
                     }
                     current = current.superclass
                 }
@@ -37,7 +37,7 @@ class ReflectionHelper {
                 ReflectionLog.logLoad(cls)
                 return cls
             } catch (e: Exception) {
-                throw Throwables.propagate(e)
+                throw RuntimeException(e)
             }
 
         }

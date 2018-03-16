@@ -93,7 +93,7 @@ object CollectionUtils {
                 output.put(currentId, data)
             }
         } catch (e: IOException) {
-            Throwables.propagate(e)
+            throw RuntimeException(e)
         }
 
     }
@@ -111,7 +111,7 @@ object CollectionUtils {
                 currentId = id
             }
         } catch (e: IOException) {
-            Throwables.propagate(e)
+            throw RuntimeException(e)
         }
 
     }

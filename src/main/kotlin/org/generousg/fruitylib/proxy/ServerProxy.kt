@@ -26,7 +26,7 @@ class ServerProxy : FruityLibProxy() {
     override fun setNowPlayingTitle(nowPlaying: String) = Unit
 
     override fun getPlayerFromHandler(handler: INetHandler): EntityPlayer? {
-        if(handler is NetHandlerPlayServer) return handler.playerEntity
+        if(handler is NetHandlerPlayServer) return handler.player
         return null
     }
 }

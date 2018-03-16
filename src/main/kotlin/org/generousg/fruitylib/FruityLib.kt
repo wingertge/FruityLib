@@ -78,7 +78,6 @@ class FruityLib {
 
         //after all builders are done
         IdSyncManager.instance.value.finishLoading()
-        ItemUtils.fixVanillaFuelValues()
     }
 
     private fun registerCapabilities() {
