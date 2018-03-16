@@ -15,7 +15,7 @@ class NetworkEventRegistry : IDataVisitor<String, Int> {
 
     internal fun getIdForClass(cls: Class<out NetworkEvent>): Int {
         val result = clsToId[cls]
-        checkNotNull(result, {"Class $cls is not registered"})
+        Preconditions.checkNotNull(result, "Class %s is not registered", cls)
         return result!!
     }
 
@@ -45,7 +45,7 @@ class NetworkEventRegistry : IDataVisitor<String, Int> {
 
         val type = createPacketType(cls)
         idToType.put(value, type)
-        clsToId[cls] = value
+        clsToId.put(cls, value)
     }
 
     override fun end() {}
@@ -61,7 +61,7 @@ class NetworkEventRegistry : IDataVisitor<String, Int> {
                 try {
                     return customType.value.java.newInstance()
                 } catch (e: Exception) {
-                    throw RuntimeException(e)
+                    throw Throwables.propagate(e)
                 }
 
             }
@@ -94,7 +94,7 @@ class NetworkEventRegistry : IDataVisitor<String, Int> {
                     try {
                         return cls.newInstance()
                     } catch (e: Exception) {
-                        throw RuntimeException(e)
+                        throw Throwables.propagate(e)
                     }
 
                 }

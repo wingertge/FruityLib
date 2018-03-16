@@ -127,7 +127,7 @@ open class SerializerRegistry {
     @Throws(IOException::class)
     fun createFromStream(input: DataInput, type: Type): Any? {
         val reader = findSerializer(type)
-        checkNotNull<IStreamReader<*>>(reader, {"Can't find reader for %s"})
+        Preconditions.checkNotNull<IStreamReader<*>>(reader, "Can't find reader for %s", type)
         return reader?.readFromStream(input)
     }
 
@@ -145,7 +145,7 @@ open class SerializerRegistry {
         Preconditions.checkNotNull(target)
 
         val writer = findSerializer(type)
-        checkNotNull<IStreamWriter<Any>>(writer, {"Can't find writer for $type"})
+        Preconditions.checkNotNull<IStreamWriter<Any>>(writer, "Can't find writer for %s", type)
         writer?.writeToStream(target, output)
     }
 }

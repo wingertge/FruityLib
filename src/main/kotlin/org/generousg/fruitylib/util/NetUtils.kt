@@ -29,7 +29,7 @@ class NetUtils {
         fun getPlayersWatchingEntity(server: WorldServer, entityId: Int): Set<EntityPlayerMP> {
             val tracker = server.entityTracker
             val entry = tracker.trackedEntityHashTable.lookup(entityId)
-            return entry?.trackingPlayers?.toSet() ?: setOf()
+            return ImmutableSet.copyOf(entry?.trackingPlayers) ?: setOf()
         }
     }
 }

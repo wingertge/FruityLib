@@ -28,30 +28,30 @@ class TargetWrapperRegistry : IDataVisitor<String, Int> {
         } catch (e: NoSuchMethodException) {
             throw IllegalArgumentException(String.format("Class %s has no parameterless constructor", key), e)
         } catch (e: Exception) {
-            throw RuntimeException(e)
+            throw Throwables.propagate(e)
         }
 
         @Suppress("UNCHECKED_CAST")
         val wrapperCls = cls as Class<out IRpcTarget>
-        this.wrapperCls[wrapperCls] = value
+        this.wrapperCls.put(wrapperCls, value)
     }
 
     override fun end() {}
 
     fun getWrapperId(cls: Class<out IRpcTarget>): Int {
         val id = wrapperCls[cls]
-        checkNotNull(id, {"Wrapper class $cls is not registered"})
+        Preconditions.checkNotNull(id, "Wrapper class %s is not registered", cls)
         return id!!
     }
 
     fun createWrapperFromId(id: Int): IRpcTarget {
         val cls = wrapperCls.inverse()[id]
-        checkNotNull(cls, {"Can't find class for id $id"})
+        Preconditions.checkNotNull(cls, "Can't find class for id %s", id)
 
         try {
             return cls!!.newInstance()
         } catch (e: Exception) {
-            throw RuntimeException(e)
+            throw Throwables.propagate(e)
         }
 
     }

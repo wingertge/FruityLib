@@ -38,10 +38,10 @@ class FeatureManager : AbstractFeatureManager() {
     fun loadFromConfig(config: Configuration): ImmutableTable<String, String, Property> {
         val properties = HashBasedTable.create<String, String, Property>()
         for(cell in features.cellSet()) {
-            val entry = cell.value!!
+            val entry = cell.value
             if(!entry.configurable) continue
-            val categoryName = cell.rowKey!!
-            val featureName = cell.columnKey!!
+            val categoryName = cell.rowKey
+            val featureName = cell.columnKey
             val property = config.get(categoryName, featureName, entry.enabled)
             properties.put(categoryName, featureName, property)
             if(!property.wasRead()) continue

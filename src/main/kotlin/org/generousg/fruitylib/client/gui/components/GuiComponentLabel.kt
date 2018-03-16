@@ -8,29 +8,29 @@ import org.generousg.fruitylib.client.gui.BaseComponent
 import org.lwjgl.opengl.GL11
 
 
-open class GuiComponentLabel(x: Int, y: Int, private var maxWidth: Int, private var maxHeight: Int, private var text: String?) : BaseComponent(x, y) {
+class GuiComponentLabel(x: Int, y: Int, private var maxWidth: Int, private var maxHeight: Int, private var text: String?) : BaseComponent(x, y) {
     private var scale = 1f
     private var formattedText: List<String>? = null
     private var additionalLineHeight = 0
     private var tooltip: List<String>? = null
 
     private val fontRenderer: FontRenderer
-        get() = Minecraft.getMinecraft().fontRenderer
+        get() = Minecraft.getMinecraft().fontRendererObj
 
-    constructor(x: Int, y: Int, text: String) : this(x, y, Minecraft.getMinecraft().fontRenderer.getStringWidth(text), Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT, text)
+    constructor(x: Int, y: Int, text: String) : this(x, y, Minecraft.getMinecraft().fontRendererObj.getStringWidth(text), Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT, text)
 
-    protected fun getFormattedText(fr: FontRenderer): List<String> {
+    fun getFormattedText(fr: FontRenderer): List<String> {
         if (formattedText == null) {
-            formattedText = if (Strings.isNullOrEmpty(text))
-                ImmutableList.of<String>()
+            if (Strings.isNullOrEmpty(text))
+                formattedText = ImmutableList.of<String>()
             else
-                ImmutableList.copyOf(fr.listFormattedStringToWidth(text!!, getMaxWidth()))
+                formattedText = ImmutableList.copyOf(fr.listFormattedStringToWidth(text, getMaxWidth()))
         }
         return formattedText!!
     }
 
     override fun render(mc: Minecraft, offsetX: Int, offsetY: Int, mouseX: Int, mouseY: Int) {
-        val fontRenderer = mc.fontRenderer
+        val fontRenderer = mc.fontRendererObj
 
         if (maxHeight < fontRenderer.FONT_HEIGHT) return
         if (getMaxWidth() < fontRenderer.getCharWidth('m')) return
@@ -50,7 +50,7 @@ open class GuiComponentLabel(x: Int, y: Int, private var maxWidth: Int, private 
         if (tooltip != null && !tooltip!!.isEmpty() && isMouseOver(mouseX, mouseY)) {
             var lineOffset = 0
             for ((count, it) in tooltip!!.withIndex()) {
-                drawHoveringText(it, offsetX + mouseX, offsetY + mouseY, mc.fontRenderer)
+                drawHoveringText(it, offsetX + mouseX, offsetY + mouseY, mc.fontRendererObj)
                 lineOffset += fontHeight
                 if(count + 1 >= maxLines) break
             }

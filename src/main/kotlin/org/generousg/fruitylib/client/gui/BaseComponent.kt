@@ -109,7 +109,7 @@ abstract class BaseComponent(var x: Int, var y: Int) : Gui() {
         RenderHelper.enableGUIStandardItemLighting()
         GL11.glColor3f(1f, 1f, 1f)
         GL11.glEnable(GL11.GL_NORMALIZE)
-        val font = stack.item.getFontRenderer(stack) ?: Minecraft.getMinecraft().fontRenderer
+        val font = stack.item.getFontRenderer(stack) ?: Minecraft.getMinecraft().fontRendererObj
         ITEM_RENDERER.value.renderItemAndEffectIntoGUI(stack, x, y)
         ITEM_RENDERER.value.renderItemOverlayIntoGUI(font, stack, x, y, overlayText)
         zLevel = 0f

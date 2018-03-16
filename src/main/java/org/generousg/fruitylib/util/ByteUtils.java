@@ -115,7 +115,7 @@ public class ByteUtils {
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Throwables.propagate(e);
         }
     }
 
@@ -130,7 +130,7 @@ public class ByteUtils {
                 shift += 7;
             } while (b < 0);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Throwables.propagate(e);
         }
         return result;
     }

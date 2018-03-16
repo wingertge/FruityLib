@@ -54,8 +54,8 @@ open class GuiComponentTab(private val color: Int, private val iconStack: ItemSt
 
     companion object {
 
-        private const val FOLDED_WIDTH = 24
-        private const val FOLDED_HEIGHT = 24
+        private val FOLDED_WIDTH = 24
+        private val FOLDED_HEIGHT = 24
 
         private val BOX_RENDERER = object : BoxRenderer(0, 5) {
             override fun renderTopLeftCorner(gui: Gui) {}

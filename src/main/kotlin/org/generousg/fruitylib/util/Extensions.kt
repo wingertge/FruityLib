@@ -2,6 +2,7 @@
 
 package org.generousg.fruitylib
 
+import mcjty.lib.tools.ItemStackTools
 import net.minecraft.block.state.IBlockState
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
@@ -14,15 +15,16 @@ import net.minecraftforge.fluids.FluidStack
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T> createFilledArray(size: Int, initializer: (Int)->T): Array<T> {
     val tempArray = arrayOfNulls<T>(size)
-    (0 until tempArray.size).forEach { tempArray[it] = initializer.invoke(it) }
+    (0..tempArray.size-1).forEach { tempArray[it] = initializer.invoke(it) }
     return tempArray as Array<T>
 }
 
 fun ItemStack.isNullOrEmpty(): Boolean {
-    return this.isEmpty
+    return ItemStackTools.isEmpty(this)
 }
 
-val emptyItemStack get() = ItemStack.EMPTY!!
+fun ItemStack.empty() = ItemStackTools.makeEmpty(this)
+val emptyItemStack get() = ItemStackTools.getEmptyStack()
 
 fun IBlockAccess.getBlockInDirection(direction: EnumFacing, pos: BlockPos): IBlockState {
     return this.getBlockState(pos.add(Vec3i(direction.frontOffsetX, direction.frontOffsetY, direction.frontOffsetZ)))

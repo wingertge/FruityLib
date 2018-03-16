@@ -21,7 +21,7 @@ class ListSerializerProvider : IGenericSerializerProvider {
     override fun getSerializer(type: Type): IStreamSerializer<*>? {
         val typeToken = TypeToken.of(type)
 
-        if(TypeUtils.LIST_TOKEN.isSupertypeOf(typeToken)) {
+        if(TypeUtils.LIST_TOKEN.isAssignableFrom(typeToken)) {
             val componentType = typeToken.resolveType(TypeUtils.LIST_VALUE_PARAM)
             return object : NullableCollectionSerializer<MutableList<Any?>>(componentType) {
                 override fun createCollection(componentType: TypeToken<*>, length: Int): MutableList<Any?> = Arrays.asList(arrayOfNulls<Any?>(length))
@@ -42,7 +42,7 @@ open class SetSerializerProvider: IGenericSerializerProvider {
     override fun getSerializer(type: Type): IStreamSerializer<*>? {
         val typeToken = TypeToken.of(type)
 
-        if(TypeUtils.SET_TOKEN.isSupertypeOf(typeToken)) {
+        if(TypeUtils.SET_TOKEN.isAssignableFrom(typeToken)) {
             val componentType = typeToken.resolveType(TypeUtils.SET_VALUE_PARAM)
             return createSetSerializer(componentType)
         }
@@ -67,7 +67,7 @@ class MapSerializerProvider : IGenericSerializerProvider {
     override fun getSerializer(type: Type): IStreamSerializer<*>? {
         val typeToken = TypeToken.of(type)
 
-        if(TypeUtils.MAP_TOKEN.isSupertypeOf(typeToken)) {
+        if(TypeUtils.MAP_TOKEN.isAssignableFrom(typeToken)) {
             val keyType = typeToken.resolveType(TypeUtils.MAP_KEY_PARAM)
             val valueType = typeToken.resolveType(TypeUtils.MAP_VALUE_PARAM)
 

@@ -77,7 +77,7 @@ open class GenericTank : FluidTank, IExtendedFluidHandler {
 
         if (drainedFluid != null && drainedFluid.amount > 0) {
             val startingAmount = drainedFluid.amount
-            sides.shuffle()
+            Collections.shuffle(sides)
 
             for (side in sides) {
                 if (drainedFluid.amount <= 0) break
@@ -107,7 +107,7 @@ open class GenericTank : FluidTank, IExtendedFluidHandler {
             if (sides.isEmpty()) return
         }
 
-        sides.shuffle()
+        Collections.shuffle(sides)
         for (side in sides) {
             if (toDrain <= 0) break
             toDrain -= fillInternal(world, coord, side, toDrain)

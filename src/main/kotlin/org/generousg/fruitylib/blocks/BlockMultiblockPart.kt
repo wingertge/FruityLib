@@ -15,7 +15,7 @@ import kotlin.reflect.KClass
 @Suppress("OverridingDeprecatedMember")
 abstract class BlockMultiblockPart(material: Material) : FruityBlock(material) {
     companion object {
-        val MB_PART = PropertyEnum.create("mb_part", MultiblockPart::class.java)
+        val MB_PART = PropertyEnum.create("mb_part", MultiblockPart::class.java)!!
     }
 
     init {

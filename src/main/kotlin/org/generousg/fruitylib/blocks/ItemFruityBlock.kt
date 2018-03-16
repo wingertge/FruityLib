@@ -4,4 +4,4 @@ import net.minecraft.block.Block
 import net.minecraft.item.ItemBlock
 
 
-class ItemFruityBlock(block: Block) : ItemBlock(block)
+class ItemFruityBlock(block: Block?) : ItemBlock(block)

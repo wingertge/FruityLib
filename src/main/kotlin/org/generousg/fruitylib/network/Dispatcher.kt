@@ -10,8 +10,8 @@ import org.generousg.fruitylib.network.senders.FmlPacketSenderFactory
 
 abstract class Dispatcher {
     protected abstract fun getChannel(side: Side): EmbeddedChannel
-    protected open val serverChannel get() = getChannel(Side.SERVER)
-    protected open val clientChannel get() = getChannel(Side.CLIENT)
+    open protected val serverChannel get() = getChannel(Side.SERVER)
+    open protected val clientChannel get() = getChannel(Side.CLIENT)
 
     inner class Senders {
         val client = FmlPacketSenderFactory.createSender(clientChannel, OutboundTarget.ALLAROUNDPOINT)
@@ -29,7 +29,7 @@ abstract class Dispatcher {
             val result = ImmutableList.builder<Any?>()
             var packet: Any?
             while (serverChannel.outboundMessages().peek() != null) {
-                packet = serverChannel.outboundMessages().poll()!!
+                packet = serverChannel.outboundMessages().poll()
                 result.add(packet)
             }
 

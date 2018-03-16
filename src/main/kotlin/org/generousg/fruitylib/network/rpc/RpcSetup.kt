@@ -10,7 +10,7 @@ import org.objectweb.asm.Type
 
 class RpcSetup internal constructor() {
     companion object {
-        const val ID_FIELDS_SEPARATOR: Char = ';'
+        val ID_FIELDS_SEPARATOR: Char = ';'
     }
 
     private var currentMethodId = 0

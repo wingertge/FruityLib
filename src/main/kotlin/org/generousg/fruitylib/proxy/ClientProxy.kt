@@ -34,7 +34,7 @@ class ClientProxy : FruityLibProxy() {
     }
 
     override fun getPlayerFromHandler(handler: INetHandler): EntityPlayer? {
-        if(handler is NetHandlerPlayServer) return handler.player
+        if(handler is NetHandlerPlayServer) return handler.playerEntity
         if(handler is NetHandlerPlayClient) return player
         return null
     }

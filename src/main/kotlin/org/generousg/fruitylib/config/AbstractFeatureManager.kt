@@ -3,9 +3,9 @@ package org.generousg.fruitylib.config
 
 abstract class AbstractFeatureManager {
     companion object Factory {
-        const val CATEGORY_ITEMS = "items"
-        const val CATEGORY_BLOCKS = "blocks"
-        const val CATEGORY_FLUIDS = "fluids"
+        val CATEGORY_ITEMS = "items"
+        val CATEGORY_BLOCKS = "blocks"
+        val CATEGORY_FLUIDS = "fluids"
     }
     abstract fun getCategories() : Set<String>
     abstract fun getFeaturesInCategory(category: String) : Set<String>

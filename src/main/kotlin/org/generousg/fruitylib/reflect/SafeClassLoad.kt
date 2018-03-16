@@ -27,7 +27,7 @@ class SafeClassLoad(val clsName: String) {
     }
 
     override fun toString(): String {
-        return "delayed $clsName"
+        return "delayed " + clsName
     }
 
     companion object {

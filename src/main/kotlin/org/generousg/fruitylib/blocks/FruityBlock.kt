@@ -9,7 +9,6 @@ import net.minecraft.block.properties.PropertyDirection
 import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.resources.I18n
-import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
@@ -33,7 +32,7 @@ import kotlin.reflect.KClass
 abstract class FruityBlock(material: Material, var hasInfo: Boolean = false) : Block(material) {
     companion object {
         val FACING: PropertyDirection = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL)
-        const val FRUITY_LIB_TE_GUI = -2
+        val FRUITY_LIB_TE_GUI = -2
     }
 
     internal var teClass: Class<out TileEntity>? = null
@@ -83,7 +82,7 @@ abstract class FruityBlock(material: Material, var hasInfo: Boolean = false) : B
     override fun getMetaFromState(state: IBlockState): Int = state.getValue(FACING).index - 2
     override fun createBlockState(): BlockStateContainer = BlockStateContainer(this, FACING)
 
-    override fun addInformation(stack: ItemStack, player: World?, tooltip: MutableList<String>, advanced: ITooltipFlag) {
+    override fun addInformation(stack: ItemStack, player: EntityPlayer, tooltip: MutableList<String>, advanced: Boolean) {
         if(hasInfo) tooltip.add(I18n.format(unlocalizedName + ".info"))
     }
 
@@ -106,6 +105,7 @@ abstract class FruityBlock(material: Material, var hasInfo: Boolean = false) : B
     override fun createTileEntity(world: World?, state: IBlockState?): TileEntity? {
         val te = createTileEntity()
         if(te != null) {
+            te.blockType = this
             if(te is FruityTileEntity) {
                 te.setup()
             }

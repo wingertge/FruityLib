@@ -3,7 +3,6 @@ package org.generousg.fruitylib.config
 import net.minecraft.block.Block
 import net.minecraft.item.Item
 import net.minecraftforge.common.config.Configuration
-import net.minecraftforge.event.RegistryEvent
 import java.io.File
 import kotlin.reflect.KClass
 
@@ -49,20 +48,12 @@ open class FeatureHelper(modId: String, mainClass: KClass<*>) {
         setupBlockFactory(configProvider.blockFactory)
         setupItemFactory(configProvider.itemFactory)
         for(holder in blockHolders)
-            configProvider.prepareBlocks(holder)
+            configProvider.registerBlocks(holder)
         for(holder in itemHolders)
-            configProvider.prepareItems(holder)
+            configProvider.registerItems(holder)
         for(holder in fluidHolders)
             configProvider.registerFluids(holder)
         setupProvider(configProvider)
-    }
-
-    fun registerBlocks(event: RegistryEvent.Register<Block>) {
-        configProvider.registerBlocks(event.registry)
-    }
-
-    fun registerItems(event: RegistryEvent.Register<Item>) {
-        configProvider.registerItems(event.registry)
     }
 
     open fun setupItemFactory(itemFactory: FactoryRegistry<Item>) {}
