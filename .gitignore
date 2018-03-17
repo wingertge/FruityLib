@@ -19,8 +19,8 @@ run
 lib
 
 # gradle
-.gradle
+#.gradle
 build
-gradle
+#gradle
 gradlew
 #gradlew.bat
