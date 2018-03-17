@@ -19,3 +19,7 @@ environment:
 
 matrix:
   fast_finish: true
+
+artifacts:
+- path: build/libs/*.jar
+  name: JARs
