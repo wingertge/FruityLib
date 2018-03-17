@@ -20,7 +20,7 @@ lib
 
 # gradle
 #.gradle
-build
+#build
 #gradle
-gradlew
+#gradlew
 #gradlew.bat
