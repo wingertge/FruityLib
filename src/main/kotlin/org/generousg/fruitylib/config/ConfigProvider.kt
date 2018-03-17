@@ -16,6 +16,7 @@ import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.Loader
+import net.minecraftforge.fml.common.registry.ForgeRegistries
 import net.minecraftforge.fml.common.registry.GameRegistry
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.registries.IForgeRegistry
@@ -48,8 +49,6 @@ class ConfigProvider() {
     val itemFactory = FactoryRegistry<Item>()
     val itemBlockFactory = FactoryRegistry<ItemBlock>()
     var creativeTabs = hashMapOf<String, CreativeTabs>()
-    private val blocks = mutableListOf<Block>()
-    private val items = mutableListOf<Item>()
 
     private class IdDecorator(val joiner: String) {
         private var modId: String = ""
@@ -97,12 +96,12 @@ class ConfigProvider() {
                 if(field.isAnnotationPresent(IgnoreFeature::class.java)) continue
                 val annotation = field.getAnnotation(RegisterFluid::class.java)
                 if(annotation == null) {
-                    Log.warn("Field $field has valid type ${Fluid::class.java} for registration, but no annotation ${RegisterFluid::class.java}")
+                    Log.warn {"Field $field has valid type ${Fluid::class.java} for registration, but no annotation ${RegisterFluid::class.java}"}
                     continue
                 }
                 val name = annotation.name
                 if(!features.isFluidEnabled(name)) {
-                    Log.info("Fluid $name (from field $field) is disabled")
+                    Log.info {"Fluid $name (from field $field) is disabled"}
                     continue
                 }
                 val existing = FluidRegistry.getFluid(name)
@@ -121,10 +120,12 @@ class ConfigProvider() {
         }
     }
 
-    fun prepareItems(clazz: Class<out ItemInstances>) {
+    fun registerItems(clazz: Class<out ItemInstances>, registry: IForgeRegistry<Item>) {
+        val items = mutableListOf<Item>()
         processAnnotations(clazz, Item::class.java, RegisterItem::class.java, itemFactory, object : IAnnotationProcessor<Item, RegisterItem> {
             override fun process(block: Item, annotation: RegisterItem) {
                 val name = annotation.name
+                registry.register(block)
                 items.add(block.setRegistryName(name))
                 if(annotation.creativeTab != "[none]" && creativeTabs[annotation.creativeTab] != null)
                     block.creativeTab = creativeTabs[annotation.creativeTab]
@@ -140,9 +141,12 @@ class ConfigProvider() {
             override fun getEntryName(annotation: RegisterItem): String = annotation.name
             override fun isEnabled(name: String): Boolean = features.isItemEnabled(name)
         })
+        registry.registerAll(*items.toTypedArray())
     }
 
-    fun prepareBlocks(clazz: Class<out BlockInstances>) {
+    fun registerBlocks(clazz: Class<out BlockInstances>, registry: IForgeRegistry<Block>) {
+        val blocks = mutableListOf<Block>()
+        val items = mutableListOf<Item>()
         processAnnotations(clazz, Block::class.java, RegisterBlock::class.java, blockFactory, object: IAnnotationProcessor<Block, RegisterBlock> {
             override fun process(block: Block, annotation: RegisterBlock) {
                 val name = annotation.name
@@ -181,14 +185,9 @@ class ConfigProvider() {
             override fun getEntryName(annotation: RegisterBlock): String = annotation.name
             override fun isEnabled(name: String): Boolean = features.isBlockEnabled(name)
         })
-    }
 
-    fun registerBlocks(registry: IForgeRegistry<Block>) {
-        blocks.forEach { registry.register(it) }
-    }
-
-    fun registerItems(registry: IForgeRegistry<Item>) {
-        items.forEach { registry.register(it) }
+        registry.registerAll(*blocks.toTypedArray())
+        ForgeRegistries.ITEMS.registerAll(*items.toTypedArray())
     }
 
     companion object Factory {
@@ -198,13 +197,13 @@ class ConfigProvider() {
                     if(field.isAnnotationPresent(IgnoreFeature::class.java)) continue
                     val annotation = field.getAnnotation(annotationClass)
                     if(annotation == null) {
-                        Log.warn("Field $field has valid type $fieldClass for registration, but no annotation $annotationClass")
+                        Log.warn {"Field $field has valid type $fieldClass for registration, but no annotation $annotationClass"}
                         continue
                     }
 
                     val name = processor.getEntryName(annotation)
                     if(!processor.isEnabled(name)) {
-                        Log.info("Item $name (from field $field) is disabled")
+                        Log.info {"Item $name (from field $field) is disabled"}
                         continue
                     }
 

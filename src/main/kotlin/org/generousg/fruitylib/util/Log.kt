@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger
 object Log {
     private var logger: Logger = LogManager.getLogger("FruityLib")
     private var stackInfo = Throwable()
-    private val PREFIX = "[FruityLib] "
+    private const val PREFIX = "[FruityLib] "
 
     private fun getLogLocation(t: Throwable): String {
         val stack = t.stackTrace
@@ -25,11 +25,21 @@ object Log {
 
     fun log(level: Level, format: String, vararg data: Any) = logWithCaller(stackInfo.fillInStackTrace(), level, format, data)
 
-    fun severe(format: String, vararg data: Any) = log(Level.ERROR, format, data)
-    fun warn(format: String, vararg data: Any) = log(Level.WARN, format, data)
-    fun info(format: String, vararg data: Any) = log(Level.INFO, format, data)
-    fun debug(format: String, vararg data: Any) = log(Level.DEBUG, format, data)
-    fun trace(format: String, vararg data: Any) = log(Level.TRACE, format, data)
+    fun severe(text: () -> String) {
+        if(logger.isErrorEnabled) log(Level.ERROR, text())
+    }
+    fun warn(text: () -> String) {
+        if(logger.isWarnEnabled) log(Level.WARN, text())
+    }
+    fun info(text: () -> String) {
+        if(logger.isInfoEnabled) log(Level.INFO, text())
+    }
+    fun debug(text: () -> String) {
+        if(logger.isDebugEnabled) log(Level.DEBUG, text())
+    }
+    fun trace(text: () -> String) {
+        if(logger.isTraceEnabled) log(Level.TRACE, text())
+    }
 
     fun log(level: Level, ex: Throwable, format: String, vararg data: Any) = logger.log(level, String.format(PREFIX + format, data), ex)
     fun severe(ex: Throwable, format: String, vararg data: Any) = log(Level.ERROR, ex, format, data)
@@ -37,6 +47,6 @@ object Log {
     fun info(ex: Throwable, format: String, vararg data: Any) = log(Level.INFO, ex, format, data)
 
     fun setLogger(logger: Logger) {
-        this.logger = logger
+        Log.logger = logger
     }
 }

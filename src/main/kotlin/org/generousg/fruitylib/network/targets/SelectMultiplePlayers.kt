@@ -20,7 +20,7 @@ class SelectMultiplePlayers : IPacketTargetSelector<Collection<EntityPlayerMP>> 
         for(player in arg) {
             val dispatcher = NetUtils.getPlayerDispatcher(player)
             if(dispatcher != null) result.add(dispatcher)
-            else Log.info("Trying to send message to disconnected player $player")
+            else Log.info {"Trying to send message to disconnected player $player"}
         }
     }
 }

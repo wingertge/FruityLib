@@ -9,10 +9,10 @@ import kotlin.reflect.KClass
 
 
 open class FeatureHelper(modId: String, mainClass: KClass<*>) {
-    val blockHolders = hashSetOf<Class<out BlockInstances>>()
-    val itemHolders = hashSetOf<Class<out ItemInstances>>()
-    val fluidHolders = hashSetOf<Class<out FluidInstances>>()
-    val configProvider : ConfigProvider = ConfigProvider(modId, mainClass)
+    protected val blockHolders = hashSetOf<Class<out BlockInstances>>()
+    protected val itemHolders = hashSetOf<Class<out ItemInstances>>()
+    protected val fluidHolders = hashSetOf<Class<out FluidInstances>>()
+    protected val configProvider : ConfigProvider = ConfigProvider(modId, mainClass)
 
     fun registerBlocksHolder(holder: Class<out BlockInstances>) {
         blockHolders.add(holder)
@@ -48,21 +48,20 @@ open class FeatureHelper(modId: String, mainClass: KClass<*>) {
         setupIds(configProvider)
         setupBlockFactory(configProvider.blockFactory)
         setupItemFactory(configProvider.itemFactory)
-        for(holder in blockHolders)
-            configProvider.prepareBlocks(holder)
-        for(holder in itemHolders)
-            configProvider.prepareItems(holder)
+
         for(holder in fluidHolders)
             configProvider.registerFluids(holder)
         setupProvider(configProvider)
     }
 
     fun registerBlocks(event: RegistryEvent.Register<Block>) {
-        configProvider.registerBlocks(event.registry)
+        for(holder in blockHolders)
+            configProvider.registerBlocks(holder, event.registry)
     }
 
     fun registerItems(event: RegistryEvent.Register<Item>) {
-        configProvider.registerItems(event.registry)
+        for(holder in itemHolders)
+            configProvider.registerItems(holder, event.registry)
     }
 
     open fun setupItemFactory(itemFactory: FactoryRegistry<Item>) {}

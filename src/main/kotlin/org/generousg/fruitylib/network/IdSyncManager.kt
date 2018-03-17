@@ -74,7 +74,7 @@ class IdSyncManager private constructor() : DataStoreManager() {
         @Throws(Exception::class)
         override fun userEventTriggered(ctx: ChannelHandlerContext, evt: Any) {
             if(evt is NetworkHandshakeEstablished) {
-                Log.debug("Sending id data for player: ${FruityLib.proxy.getPlayerFromHandler(evt.netHandler)}")
+                Log.debug {"Sending id data for player: ${FruityLib.proxy.getPlayerFromHandler(evt.netHandler)}"}
                 sendAllIds(ctx)
             } else {
                 ctx.fireUserEventTriggered(evt)
@@ -107,7 +107,7 @@ class IdSyncManager private constructor() : DataStoreManager() {
 
             val keyId = input.readUTF()
 
-            Log.debug("Received data store for key $keyId, packet size = ${buf.writerIndex()}")
+            Log.debug {"Received data store for key $keyId, packet size = ${buf.writerIndex()}"}
             val wrapper = getDataStoreMeta<Any?, Any?>(keyId)
             val reader = wrapper.createReader()
             reader.read(input)
@@ -117,7 +117,7 @@ class IdSyncManager private constructor() : DataStoreManager() {
     @SubscribeEvent
     @Suppress("UNUSED_PARAMETER")
     fun onDisconnect(event: FMLNetworkEvent.ClientDisconnectionFromServerEvent) {
-        Log.debug("Disconnected, restoring local data")
+        Log.debug {"Disconnected, restoring local data"}
         activateLocalData()
     }
 

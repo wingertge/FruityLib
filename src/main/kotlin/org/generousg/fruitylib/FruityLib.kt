@@ -46,7 +46,7 @@ class FruityLib {
                 .registerTargetWrapper(TileEntityRpcTarget::class.java)
                 .registerTargetWrapper(SyncRpcTarget.SyncEntityRpcTarget::class.java)
                 .registerTargetWrapper(SyncRpcTarget.SyncTileEntityRpcTarget::class.java)
-        Log.debug("test")
+        Log.debug {"RPC System initialized."}
 
         /*val configFile = event.suggestedConfigurationFile
         val config = Configuration(configFile)

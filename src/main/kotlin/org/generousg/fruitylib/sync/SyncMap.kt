@@ -53,7 +53,7 @@ abstract class SyncMap<out H : ISyncMapProvider>(protected val handler: H) {
                     val entity = world.getEntityByID(entityId)
                     if(entity is ISyncMapProvider) return entity
 
-                    Log.warn("Invalid handler info: can't find ISyncHandler multiblockEntity id $entityId")
+                    Log.warn {"Invalid handler info: can't find ISyncHandler multiblockEntity id $entityId"}
                     return null
                 }
 
@@ -81,7 +81,7 @@ abstract class SyncMap<out H : ISyncMapProvider>(protected val handler: H) {
                         if(tile is ISyncMapProvider) return tile
                     }
 
-                    Log.warn("Invalid handler info: can't find ISyncHandler TE @ ($x,$y,$z)", x, y, z)
+                    Log.warn {"Invalid handler info: can't find ISyncHandler TE @ ($x,$y,$z)"}
                     return null
                 }
 
