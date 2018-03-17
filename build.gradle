@@ -54,7 +54,7 @@ minecraft {
     mappings = "snapshot_20180316"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     replace '${mod_version}', project.version
-    replaceIn "KaitenCraft.java"
+    replaceIn "FruityLib.java"
 }
 
 dependencies {
